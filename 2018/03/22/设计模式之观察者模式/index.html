@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>设计模式之观察者模式 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="设计模式," />
+  
+
+  <meta name="description" content="观察者模式观察者模式定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。 类图 观察者接口Observer，观察对象发生变化后，update()方法会被调用被观察者接口Subject，通过Notify()方法通知观察者    要点 观察者模式定义了对象之间一对多的关系 主题（也就是可观察者）用一个共同的接口来更新观察者 观察者和可观察者之间用松耦合方式">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之观察者模式">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/03/22/设计模式之观察者模式/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="观察者模式观察者模式定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。 类图 观察者接口Observer，观察对象发生变化后，update()方法会被调用被观察者接口Subject，通过Notify()方法通知观察者    要点 观察者模式定义了对象之间一对多的关系 主题（也就是可观察者）用一个共同的接口来更新观察者 观察者和可观察者之间用松耦合方式">
+<meta property="og:locale" content="zh">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/设计模式之观察者模式/观察者类图.gif">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/设计模式之观察者模式/观察者1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/设计模式之观察者模式/观察者2.png">
+<meta property="og:updated_time" content="2018-04-17T01:36:58.483Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="设计模式之观察者模式">
+<meta name="twitter:description" content="观察者模式观察者模式定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。 类图 观察者接口Observer，观察对象发生变化后，update()方法会被调用被观察者接口Subject，通过Notify()方法通知观察者    要点 观察者模式定义了对象之间一对多的关系 主题（也就是可观察者）用一个共同的接口来更新观察者 观察者和可观察者之间用松耦合方式">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/03/22/设计模式之观察者模式/观察者类图.gif">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#观察者模式"><span class="toc-text">观察者模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#类图"><span class="toc-text">类图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#要点"><span class="toc-text">要点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#例子"><span class="toc-text">例子</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#使用java内置的观察者模式："><span class="toc-text">使用java内置的观察者模式：</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-设计模式之观察者模式" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">设计模式之观察者模式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.03.22</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h1><p>观察者模式定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。</p>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p><img src="/2018/03/22/设计模式之观察者模式/观察者类图.gif" alt="观察者类图"></p>
+<p>观察者接口Observer，观察对象发生变化后，update()方法会被调用<br>被观察者接口Subject，通过Notify()方法通知观察者  </p>
+<hr>
+<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><ul>
+<li>观察者模式定义了对象之间一对多的关系</li>
+<li>主题（也就是可观察者）用一个共同的接口来更新观察者</li>
+<li>观察者和可观察者之间用松耦合方式结合，可观察者不知道观察者的细节，只知道观察者实现了观察者接口</li>
+<li>使用此模式时，你可以被观察者 推（push） 或 拉（pull）数据。（然而，推的方式被认为更“正确”）</li>
+<li>有多个观察者时，不可以依赖特定的通知次序</li>
+<li>java有多种观察者模式的实现，包括通用的java.util.Observable</li>
+<li>有必要的话，可以实现自己的Observable</li>
+</ul>
+<hr>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>一个气象站的例子。我们有一个类，提供三个方法，分表用来获取 getTemperature()温度，getHumidity()湿度，getPressure()气压。一旦气象测量更新，measurementsChanged()方法就会被调用。<br>我们的工作是：实现measurementsChanged()方法，在气象更新之后获取最新的数据，推给三个布告板</p>
+<p>我们先看个例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherData</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">measurementsChanged</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">float</span> temp = getTemperature();<span class="comment">//获得温度</span></span><br><span class="line">        <span class="keyword">float</span> humidity = getHumidity();<span class="comment">//获得湿度</span></span><br><span class="line">        <span class="keyword">float</span> pressure = getPressure();<span class="comment">//获得气压</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//更新一号布告板</span></span><br><span class="line">        currentConditionsDisplay.update(temp,humidity,pressure);</span><br><span class="line">        <span class="comment">//更新二号布告板</span></span><br><span class="line">        statisticsDisplay.update(temp,humidity,pressure);</span><br><span class="line">        <span class="comment">//更新三号布告板</span></span><br><span class="line">        forecastDisplay.update(temp,humidity,pressure);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>存在的问题：</p>
+<ul>
+<li>这是针对具体实现编程，而不是针对接口</li>
+<li>对于每个新的布告板，我们都得修改代码</li>
+<li>我们无法在运行时动态增加（或删除）布告板</li>
+<li>布告板没有实现一个共同的接口</li>
+<li>我们尚未封装改变的部分</li>
+<li>我们侵犯了WeatherData类的封装</li>
+</ul>
+<p><strong>设计原则：为了交互对象之间的松耦合设计而努力</strong></p>
+<p>我们使用观察者模式来设计<br>首先我们定义观察者模式接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//观察者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Observer</span> </span>&#123;</span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">float</span> temp,<span class="keyword">float</span> humidity,<span class="keyword">float</span> pressure)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//被观察者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Subject</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">registerObserver</span><span class="params">(Observer o)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">removeObserver</span><span class="params">(Observer o)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">notifyObservers</span><span class="params">()</span></span>;<span class="comment">//通知观察者</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们来建立具体的类<br><img src="/2018/03/22/设计模式之观察者模式/观察者1.png" alt="观察者1"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherData</span> <span class="keyword">implements</span> <span class="title">Subject</span> </span>&#123;</span><br><span class="line">    <span class="comment">//观察者集合</span></span><br><span class="line">    <span class="keyword">private</span> ArrayList&lt;Observer&gt; observers;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> temp;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> humidity;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> pressure;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WeatherData</span><span class="params">()</span></span>&#123;</span><br><span class="line">        observers = <span class="keyword">new</span> ArrayList&lt;Observer&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//增加观察者</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">registerObserver</span><span class="params">(Observer o)</span> </span>&#123;</span><br><span class="line">        observers.add(o);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//删除观察者</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeObserver</span><span class="params">(Observer o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = observers.indexOf(o);</span><br><span class="line">        <span class="keyword">if</span>(i &gt;= <span class="number">0</span>)&#123;</span><br><span class="line">            observers.remove(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//通知观察者</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">notifyObservers</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(Observer o : observers)&#123;</span><br><span class="line">            o.update(temp,humidity,pressure);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//气象更新，需要通知观察者</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">measurementsChanged</span><span class="params">()</span></span>&#123;</span><br><span class="line">        notifyObservers();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//测试接口</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMeasurements</span><span class="params">(<span class="keyword">float</span> temp,<span class="keyword">float</span> humidity,<span class="keyword">float</span> pressure)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.temp = temp;</span><br><span class="line">        <span class="keyword">this</span>.humidity = humidity;</span><br><span class="line">        <span class="keyword">this</span>.pressure = pressure;</span><br><span class="line">        measurementsChanged();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>具体布告板，其他布告板类似<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一号布告板</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CurrentConditionsDisplay</span> <span class="keyword">implements</span> <span class="title">Observer</span>,<span class="title">DisplayElement</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Subject weatherData;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> temp;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> humidity;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CurrentConditionsDisplay</span><span class="params">(Subject weatherData)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.weatherData = weatherData;</span><br><span class="line">        weatherData.registerObserver(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//收到通知之后，进行操作</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(<span class="keyword">float</span> temp, <span class="keyword">float</span> humidity, <span class="keyword">float</span> pressure)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.temp = temp;</span><br><span class="line">        <span class="keyword">this</span>.humidity = humidity;</span><br><span class="line">        display();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"display"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherStation</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        WeatherData weatherData = <span class="keyword">new</span> WeatherData();</span><br><span class="line">        <span class="comment">//定义观察者</span></span><br><span class="line">        CurrentConditionsDisplay conditionsDisplay = <span class="keyword">new</span> CurrentConditionsDisplay(weatherData);</span><br><span class="line">        <span class="comment">//可以定义其他观察者....</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">//更新数据，观察者更新</span></span><br><span class="line">        weatherData.setMeasurements(<span class="number">10</span>,<span class="number">20</span>,<span class="number">30</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="使用java内置的观察者模式："><a href="#使用java内置的观察者模式：" class="headerlink" title="使用java内置的观察者模式："></a>使用java内置的观察者模式：</h2><p>java内置的观察者模式 java.util.Observer 和 java.util.Observable<br><img src="/2018/03/22/设计模式之观察者模式/观察者2.png" alt="观察者2"></p>
+<p>具体代码<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeatherData</span> <span class="keyword">extends</span> <span class="title">Observable</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> temp;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> humidity;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> pressure;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WeatherData</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//气象更新，需要通知观察者</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">measurementsChanged</span><span class="params">()</span></span>&#123;</span><br><span class="line">        setChanged();</span><br><span class="line">        notifyObservers();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//测试接口</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setMeasurements</span><span class="params">(<span class="keyword">float</span> temp,<span class="keyword">float</span> humidity,<span class="keyword">float</span> pressure)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.temp = temp;</span><br><span class="line">        <span class="keyword">this</span>.humidity = humidity;</span><br><span class="line">        <span class="keyword">this</span>.pressure = pressure;</span><br><span class="line">        measurementsChanged();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//一号布告板</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CurrentConditionsDisplay</span> <span class="keyword">implements</span> <span class="title">java</span>.<span class="title">util</span>.<span class="title">Observer</span>,<span class="title">DisplayElement</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Observable observable;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> temp;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> humidity;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CurrentConditionsDisplay</span><span class="params">(Observable observable)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.observable = observable;</span><br><span class="line">        observable.addObserver(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//收到通知之后进行操作</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(Observable o, Object arg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(o <span class="keyword">instanceof</span> WeatherData)&#123;</span><br><span class="line">            WeatherData weatherData = (WeatherData) o;</span><br><span class="line">            <span class="keyword">this</span>.temp = temp;</span><br><span class="line">            <span class="keyword">this</span>.humidity = humidity;</span><br><span class="line">            display();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">display</span><span class="params">()</span></span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"display"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>我们在使用 java.util.Observable 需要注意的问题：</strong></p>
+<ul>
+<li>Observable是一个类，而不是接口。我们只能通过继承来使用</li>
+<li>多个观察者被通知的次序是不固定的</li>
+</ul>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = gczms id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/03/19/hexo-github搭建个人博客/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/03/22/设计模式之装饰模式/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>diamond简介和使用 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="diamond," />
+  
+
+  <meta name="description" content="简介diamond是淘宝内部使用的一个管理持久配置的系统，它的特点是简单、可靠、易用，目前淘宝内部绝大多数系统的配置，由diamond来进行统一管理。diamond为应用系统提供了获取配置的服务，应用不仅可以在启动时从diamond获取相关的配置，而且可以在运行中对配置数据的变化进行感知并获取变化后的配置数据。   diamond的特点是简单、可靠、易用：  简单：整体结构非常简单，从而减少了出错">
+<meta name="keywords" content="diamond">
+<meta property="og:type" content="article">
+<meta property="og:title" content="diamond简介和使用">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/01/03/diamond简介和使用/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="简介diamond是淘宝内部使用的一个管理持久配置的系统，它的特点是简单、可靠、易用，目前淘宝内部绝大多数系统的配置，由diamond来进行统一管理。diamond为应用系统提供了获取配置的服务，应用不仅可以在启动时从diamond获取相关的配置，而且可以在运行中对配置数据的变化进行感知并获取变化后的配置数据。   diamond的特点是简单、可靠、易用：  简单：整体结构非常简单，从而减少了出错">
+<meta property="og:locale" content="zh">
+<meta property="og:updated_time" content="2018-04-17T01:36:58.387Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="diamond简介和使用">
+<meta name="twitter:description" content="简介diamond是淘宝内部使用的一个管理持久配置的系统，它的特点是简单、可靠、易用，目前淘宝内部绝大多数系统的配置，由diamond来进行统一管理。diamond为应用系统提供了获取配置的服务，应用不仅可以在启动时从diamond获取相关的配置，而且可以在运行中对配置数据的变化进行感知并获取变化后的配置数据。   diamond的特点是简单、可靠、易用：  简单：整体结构非常简单，从而减少了出错">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    <link rel="stylesheet" href="/css/personal-style.css">
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+</head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            博客
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#整体架构"><span class="toc-text">整体架构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#服务端安装"><span class="toc-text">服务端安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#客户端安装"><span class="toc-text">客户端安装</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#容灾机制"><span class="toc-text">容灾机制</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#其他相关"><span class="toc-text">其他相关</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-diamond简介和使用" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">diamond简介和使用</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.01.03</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>diamond是淘宝内部使用的一个管理持久配置的系统，它的特点是简单、可靠、易用，目前淘宝内部绝大多数系统的配置，由diamond来进行统一管理。<br>diamond为应用系统提供了获取配置的服务，应用不仅可以在启动时从diamond获取相关的配置，而且可以在运行中对配置数据的变化进行感知并获取变化后的配置数据。  </p>
+<p>diamond的特点是简单、可靠、易用：</p>
+<ul>
+<li>简单：整体结构非常简单，从而减少了出错的可能性。</li>
+<li>可靠：应用方在任何情况下都可以启动，在承载淘宝核心系统并正常运行一年多以来，没有出现过任何重大故障。</li>
+<li>易用：客户端使用只需要两行代码，暴露的接口都非常简单，易于理解。</li>
+</ul>
+<p>github地址 <a href="https://github.com/takeseem/diamond" target="_blank" rel="noopener">https://github.com/takeseem/diamond</a></p>
+<h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><ol>
+<li>作为一个配置中心，diamond的功能分为发布和订阅两部分。因为diamond存放的是持久数据，这些数据的变化频率不会很高，甚至很低，所以发布采用手工的形式，通过diamond后台管理界面发布；订阅是diamond的核心功能，订阅通过diamond-client的API进行。</li>
+<li>diamond服务端采用mysql加本地文件的形式存放配置数据。发布数据时，数据先写到mysql，再写到本地文件；订阅数据时，直接获取本地文件，不查询数据库，这样可以最大程度减少对数据库的压力。</li>
+<li>diamond服务端是一个集群，集群中的每台机器连接同一个mysql，集群之间的数据同步通过两种方式进行，一是每台server定时去mysqldump数据到本地文件，二是某一台server接收发布数据请求，在更新完mysql和本机的本地文件后，发送一个HTTP请求（通知）到集群中的其他几台server，其他server收到通知，去mysql中将刚刚更新的数据dump到本地文件。</li>
+<li>每一台server前端都有一个nginx，用来做流量控制。</li>
+<li>地址服务器是一台有域名的机器，上面运行有一个HTTPserver，其中有一个静态文件，存放着diamond服务器的地址列表。客户端启动时，根据自身的域名绑定，连接到地址服务器，取回diamond服务器的地址列表，从中随机选择一台diamond服务器进行连接。</li>
+</ol>
+<p>可以看到，整个diamond的架构非常简单，使用的都是最常用的一些技术以及产品，它之所以表现得非常稳定，跟其架构简单是分不开的，当然，稳定的另一个主要原因是它具备一套比较完善的容灾机制，容灾机制将在下一篇文章中讲述。</p>
+<hr>
+<h1 id="服务端安装"><a href="#服务端安装" class="headerlink" title="服务端安装"></a>服务端安装</h1><ol>
+<li>检出源码，修改配置文件 jdbc.properties 中的数据库连接信息，完成之后maven打包</li>
+<li><p>数据库执行初始化sql</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> diamond;</span><br><span class="line"></span><br><span class="line"><span class="keyword">grant</span> all <span class="keyword">on</span> diamond.* <span class="keyword">to</span> CK@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'abc'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> diamond</span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> config_info (</span><br><span class="line"><span class="string">`id`</span> <span class="built_in">bigint</span>(<span class="number">64</span>) <span class="keyword">unsigned</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> auto_increment,</span><br><span class="line"><span class="string">`data_id`</span> <span class="built_in">varchar</span>(<span class="number">255</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">default</span> <span class="string">' '</span>,</span><br><span class="line"><span class="string">`group_id`</span> <span class="built_in">varchar</span>(<span class="number">128</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">default</span> <span class="string">' '</span>,</span><br><span class="line"><span class="string">`content`</span> longtext <span class="keyword">NOT</span> <span class="literal">NULL</span>,</span><br><span class="line"><span class="string">`md5`</span> <span class="built_in">varchar</span>(<span class="number">32</span>) <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">default</span> <span class="string">' '</span>,</span><br><span class="line"><span class="string">`gmt_create`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">default</span> <span class="string">'2010-05-05 00:00:00'</span>,</span><br><span class="line"><span class="string">`gmt_modified`</span> datetime <span class="keyword">NOT</span> <span class="literal">NULL</span> <span class="keyword">default</span> <span class="string">'2010-05-05 00:00:00'</span>,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>),</span><br><span class="line"><span class="keyword">UNIQUE</span> <span class="keyword">KEY</span> <span class="string">`uk_config_datagroup`</span> (<span class="string">`data_id`</span>,<span class="string">`group_id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8 ;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将打好的包 diamond-server.war 放到tomcat工作目录，启动。启动成功之后，访问 <a href="http://localhost:8090/diamond-server/" target="_blank" rel="noopener">http://localhost:8090/diamond-server/</a> </p>
+</li>
+<li>发布数据，账号密码是user.properties中配置的，默认是 abc=123。登录后进入后台管理界面，然后点击“配置信息管理”—— “添加配置信息”，在输入框中输入dataId、group、内容，最后点击“提交”即可。成功后，可以在“配置信息管理”中查询到发布的数据。</li>
+<li>集群安装。修改node.properties，格式为   ip\:port  ，这里面的冒号，一定要通过\转义一下，要不然获取地址不对。当存在node节点的配置，发布修改数据后会通知其他节点更新。</li>
+<li>每台diamond-server 前建议增加nginx转发，方便限流，而且客户端默认请求80端口</li>
+<li>其他配置： system.properties中的dump_config_interval 是多久去更新一次本地缓存的数据 默认是 600秒</li>
+</ol>
+<hr>
+<h1 id="客户端安装"><a href="#客户端安装" class="headerlink" title="客户端安装"></a>客户端安装</h1><p>客户端获取数据方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DiamondManager manager = <span class="keyword">new</span> DefaultDiamondManager(group, dataId, <span class="keyword">new</span> ManagerListener() &#123;  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> Executor <span class="title">getExecutor</span><span class="params">()</span> </span>&#123;  </span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line">  </span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveConfigInfo</span><span class="params">(String configInfo)</span> </span>&#123;  </span><br><span class="line">      <span class="comment">// 客户端处理数据的逻辑  </span></span><br><span class="line">  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<p>集成思路：重写PropertyPlaceholderConfigurer，将diamond管理的配置交个spring，spring的xml可以直接使用${}来查询数据，增加工具类PropertiesUtils.java 方便查询diamond管理的数据。具体代码<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 引入依赖diamond --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.taobao.diamond<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>diamond-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.5.4.taocode-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.taobao.diamond<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>diamond-utils<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.5.4.taocode-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>重写PropertyPlaceholderConfigurer<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zyx.demo.common.spring;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.ConfigurableListableBeanFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;重写PropertyPlaceholderConfigurer，将diamond配置信息交给spring&lt;/p&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringPropertyPlaceholderConfigurer</span> <span class="keyword">extends</span> <span class="title">PropertyPlaceholderConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; diamondList;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getDiamondList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> diamondList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDiamondList</span><span class="params">(List&lt;String&gt; diamondList)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.diamondList = diamondList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">processProperties</span><span class="params">(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        Properties properties = PropertiesUtils.getProperties(diamondList);</span><br><span class="line">        <span class="keyword">if</span> (properties == <span class="keyword">null</span>) &#123;</span><br><span class="line">            String diamondFilePath = PropertiesUtils.DIAMOND_FILEPATH;<span class="comment">//System.getProperty("user.home") + System.getProperty("file.separator") + ".diamond.domain";</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"从diamond获取配置为空(dataId和group是"</span> + diamondList + <span class="string">")，请检查diamond要连接的环境:"</span> + diamondFilePath);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.setProperties(properties);</span><br><span class="line">        <span class="keyword">for</span> (Iterator&lt;Object&gt; iterator = properties.keySet().iterator(); iterator.hasNext();) &#123;</span><br><span class="line">            String key = (String) iterator.next();</span><br><span class="line">            String value = (String) properties.get(key);</span><br><span class="line">            props.setProperty(key, value);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">super</span>.processProperties(beanFactoryToProcess, properties);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>PropertiesUtils.java工具类<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.zyx.demo.common.spring;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.taobao.diamond.manager.ManagerListener;</span><br><span class="line"><span class="keyword">import</span> com.taobao.diamond.manager.ManagerListenerAdapter;</span><br><span class="line"><span class="keyword">import</span> com.taobao.diamond.manager.impl.DefaultDiamondManager;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.io.FileUtils;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.StringUtils;</span><br><span class="line"><span class="keyword">import</span> org.apache.log4j.Logger;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.ByteArrayInputStream;</span><br><span class="line"><span class="keyword">import</span> java.io.File;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.Executor;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;工具类，获取diamond配置&lt;/p&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PropertiesUtils</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> Properties properties;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> Logger logger = Logger.getLogger(PropertiesUtils.class);</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> TIME_OUT = <span class="number">5000L</span>;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> String diamondIpList;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; diamondIdgroupList;</span><br><span class="line">        <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> String DIAMOND_FILEPATH=<span class="string">"diamond.data"</span>;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Properties <span class="title">getProperties</span><span class="params">(List&lt;String&gt; diamondList)</span> </span>&#123;</span><br><span class="line">            diamondIdgroupList = diamondList;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> == properties) &#123;</span><br><span class="line">                init();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> properties;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Properties <span class="title">getProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> == properties) &#123;</span><br><span class="line">                init();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> properties;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 根据key从map中取值</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Object <span class="title">getValueByKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">null</span> == properties) &#123;</span><br><span class="line">                init();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> properties.get(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getStringValueByKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> (String) getValueByKey(key);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getIntValueByKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Integer.parseInt((String) getValueByKey(key));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">getDoubleValueByKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Double.parseDouble((String) getValueByKey(key));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">getBooleanValueByKey</span><span class="params">(String key)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> Boolean.parseBoolean((String) (getValueByKey(key)));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">getStringValueByKey</span><span class="params">(String key, String defaultV)</span> </span>&#123;</span><br><span class="line">            Object value = getValueByKey(key);</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> defaultV;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (String) value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getIntValueByKey</span><span class="params">(String key, <span class="keyword">int</span> defaultV)</span> </span>&#123;</span><br><span class="line">            Object value = getValueByKey(key);</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> defaultV;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> Integer.parseInt((String) value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span> <span class="title">getDoubleValueByKey</span><span class="params">(String key, <span class="keyword">double</span> defaultV)</span> </span>&#123;</span><br><span class="line">            Object value = getValueByKey(key);</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> defaultV;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> Double.parseDouble((String) value);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">getBooleanValueByKey</span><span class="params">(String key, <span class="keyword">boolean</span> defaultV)</span> </span>&#123;</span><br><span class="line">            Object value = getValueByKey(key);</span><br><span class="line">            <span class="keyword">if</span> (value == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> defaultV;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> Boolean.parseBoolean((String) (value));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * init(读取多个dataId 与 groupId )*/</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            String diamondFilePath = PropertiesUtils.class.getClassLoader().getResource(DIAMOND_FILEPATH).getPath() ;<span class="comment">//System.getProperty("user.home") + "/.diamond.domain";</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">                List&lt;String&gt; contentList = FileUtils.readLines(<span class="keyword">new</span> File(diamondFilePath), <span class="string">"UTF-8"</span>);</span><br><span class="line">                <span class="keyword">for</span> (String ipList : contentList) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!ipList.contains(<span class="string">"#"</span>)) &#123;</span><br><span class="line">                        diamondIpList = ipList.trim();</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                logger.error(<span class="string">"获取diamond文件内容失败："</span> + e.getMessage(), e);</span><br><span class="line">            &#125;</span><br><span class="line">            logger.info(<span class="string">"diaond--&gt;filePath:"</span> + diamondFilePath + <span class="string">" change diamondIpList:"</span> + diamondIpList);</span><br><span class="line">            <span class="keyword">if</span> (diamondIdgroupList != <span class="keyword">null</span> &amp;&amp; diamondIpList != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (String str : diamondIdgroupList) &#123;</span><br><span class="line">                    <span class="comment">// dataid</span></span><br><span class="line">                    String dataId = <span class="string">""</span>;</span><br><span class="line">                    String groupId = <span class="string">""</span>;</span><br><span class="line">                    <span class="keyword">if</span> (str.indexOf(<span class="string">":"</span>) &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">                        dataId = str.substring(<span class="number">0</span>, str.indexOf(<span class="string">":"</span>));</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (str.lastIndexOf(<span class="string">":"</span>) &gt; -<span class="number">1</span>) &#123;</span><br><span class="line">                        groupId = str.substring(str.indexOf(<span class="string">":"</span>) + <span class="number">1</span>,str.length());</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (!StringUtils.isEmpty(dataId) &amp;&amp; !StringUtils.isEmpty(groupId)) &#123;</span><br><span class="line">                        DefaultDiamondManager manager = <span class="keyword">new</span> DefaultDiamondManager(dataId, groupId, <span class="keyword">new</span> ManagerListenerAdapter() &#123;</span><br><span class="line">                            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">receiveConfigInfo</span><span class="params">(String configInfo)</span> </span>&#123;</span><br><span class="line">                                <span class="comment">//数据发生变更时，更新数据</span></span><br><span class="line">                                putAndUpdateProperties(configInfo);</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;, diamondIpList);</span><br><span class="line">                        String configInfo = manager.getAvailableConfigureInfomation(TIME_OUT);</span><br><span class="line">                        logger.debug(<span class="string">"从diamond取到的数据是："</span> + configInfo);</span><br><span class="line">                        putAndUpdateProperties(configInfo);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        logger.error(<span class="string">"diamond数据配置properties异常: DataId:"</span> + dataId + <span class="string">",Group:"</span> + groupId);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                logger.error(<span class="string">"diamond数据配置properties异常: diamondBeanList is null or diamondIpList is null"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 更新properties中数据*/</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">putAndUpdateProperties</span><span class="params">(String configInfo)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (StringUtils.isNotEmpty(configInfo)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (properties == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    properties = <span class="keyword">new</span> Properties();</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    properties.load(<span class="keyword">new</span> ByteArrayInputStream(configInfo.getBytes()));</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    logger.error(<span class="string">"根据diamond数据流转成properties异常"</span> + e.getMessage(), e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                logger.error(<span class="string">"从diamond取出的数据为空，请检查配置"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">getDiamondIdgroupList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> diamondIdgroupList;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setDiamondIdgroupList</span><span class="params">(List&lt;String&gt; diamondIdgroupList)</span> </span>&#123;</span><br><span class="line">            PropertiesUtils.diamondIdgroupList = diamondIdgroupList;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">getDiamondIpList</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> diamondIpList;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>spring配置<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- diamond管理配置文件 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span> = <span class="string">"propertyConfigurer"</span>  <span class="attr">class</span>=<span class="string">"com.zyx.demo.common.spring.SpringPropertyPlaceholderConfigurer"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">"diamondList"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">list</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">value</span>&gt;</span>com-zyx-demo:com-zyx-demo<span class="tag">&lt;/<span class="name">value</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">list</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="容灾机制"><a href="#容灾机制" class="headerlink" title="容灾机制"></a>容灾机制</h1><p>diamond具有一套完备的容灾机制，容灾机制涉及到client和server两部分，主要包括以下几个方面：</p>
+<ul>
+<li><strong>server存储数据的方式。</strong><br>  server存储数据是“数据库+本地文件”的方式，集群间的数据同步我们在之前的文章中讲过（请参考专题二的原理部分），client订阅数据时，访问的是本地文件，不查询数据库，这样即使数据库出问题了，仍然不影响client的订阅。</li>
+<li><strong>server是一个集群。</strong><br>  这是一个基本的容灾机制，集群中的一台server不可用了，client发现后可以自动切换到其他server上进行访问，自动切换在client内部实现。</li>
+<li><strong>client保存snapshot</strong><br>  client每次从server获取到数据后，都会将数据保存在本地文件系统，diamond称之为snapshot，即数据快照。当client下次启动发现在超时时间内所有server均不可用（可能是网络故障），它会使用snapshot中的数据快照进行启动。</li>
+<li><strong>client校验MD5</strong><br>  client每次从server获取到数据后，都会进行MD5校验（数据保存在responsebody，MD5保存在responseheader），以防止因网络故障造成的数据不完整，MD5校验不通过直接抛出异常。</li>
+<li><strong>client与server分离</strong><br>  client可以和server完全分离，单独使用，diamond定义了一个“容灾目录”的概念，client在启动时会创建这个目录，每次主动获取数据（即调用getAvailableConfigInfomation()方法），都会优先从“容灾目录”获取数据，如果client按照一个固定的规则，在“容灾目录”下配置了需要的数据，那么client直接获取到数据返回，不再通过网络从diamond-server获取数据。同样的，在每次轮询时，都会优先轮询“容灾目录”，如果发现配置还存在于其中，则不再向server发出轮询请求。以上的情形，会持续到“容灾目录”的配置数据被删除为止。</li>
+</ul>
+<p>根据以上的容灾机制，我们可以总结一下diamond整个系统完全不可用的条件：</p>
+<ol>
+<li>数据库不可用。</li>
+<li>所有server均不可用。</li>
+<li>client主动删除了snapshot</li>
+<li>client没有备份配置数据，导致其不能配置“容灾目录”。</li>
+</ol>
+<p>同时满足以上4个条件的概率，在生产环境中是极小的。以上就是diamond的容灾机制</p>
+<hr>
+<h1 id="其他相关"><a href="#其他相关" class="headerlink" title="其他相关"></a>其他相关</h1><p>disconf是来自百度的分布式配置管理平台。<br>包括百度、滴滴出行、银联、网易、拉勾网、苏宁易购、顺丰科技 等知名互联网公司正在使用!<br>github地址 <a href="https://github.com/knightliao/disconf" target="_blank" rel="noopener">https://github.com/knightliao/disconf</a></p>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = diamondjj id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2017/10/19/设计模式之策略模式/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/01/11/java四种线程池简介，使用/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              博客
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
