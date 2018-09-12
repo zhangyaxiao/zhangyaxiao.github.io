@@ -7,26 +7,26 @@
 <head>
   <meta charset="utf-8">
   
-  <title>悲观锁和乐观锁 | 张亚晓</title>
+  <title>Google Guava之Preconditions优雅的检验参数 | 张亚晓</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="java," />
+    <meta name="keywords" content="Guava," />
   
 
-  <meta name="description" content="悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。  乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不">
-<meta name="keywords" content="java">
+  <meta name="description" content="#">
+<meta name="keywords" content="Guava">
 <meta property="og:type" content="article">
-<meta property="og:title" content="悲观锁和乐观锁">
-<meta property="og:url" content="https://zhangyaxiao.github.io/2017/08/01/悲观锁和乐观锁/index.html">
+<meta property="og:title" content="Google Guava之Preconditions优雅的检验参数">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/04/28/Google-Guava之Preconditions优雅的检验参数/index.html">
 <meta property="og:site_name" content="张亚晓">
-<meta property="og:description" content="悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。  乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不">
+<meta property="og:description" content="#">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-04-28T02:03:16.547Z">
+<meta property="og:updated_time" content="2018-04-28T02:35:40.446Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="悲观锁和乐观锁">
-<meta name="twitter:description" content="悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。  乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不">
+<meta name="twitter:title" content="Google Guava之Preconditions优雅的检验参数">
+<meta name="twitter:description" content="#">
 
   
 
@@ -128,14 +128,14 @@
 
 
 <div class="content content-post CENTER">
-   <article id="post-悲观锁和乐观锁" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Google-Guava之Preconditions优雅的检验参数" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">悲观锁和乐观锁</h1>
+    <h1 class="post-title">Google Guava之Preconditions优雅的检验参数</h1>
 
     <div class="article-meta">
       <span>
         <i class="icon-calendar"></i>
-        <span>2017.08.01</span>
+        <span>2018.04.28</span>
       </span>
 
       
@@ -158,12 +158,8 @@
 
   <div class="article-content">
     
-      <p>悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。</p>
-<hr>
-<p>乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，所以不会上锁，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量，像数据库如果提供类似于write_condition机制的其实都是提供的乐观锁。</p>
-<hr>
-<p>两种锁各有优缺点，不可认为一种好于另一种，像乐观锁适用于写比较少的情况下，即冲突真的很少发生的时候，这样可以省去了锁的开销，加大了系统的整个吞吐量。但如果经常产生冲突，上层应用会不断的进行retry，这样反倒是降低了性能，所以这种情况下用悲观锁就比较合适。</p>
-<hr>
+      <hr>
+<p># </p>
 
     
   </div>
@@ -177,8 +173,6 @@
 
    
 
-
-<input value = lgsbgs id = 'comment'  type='hidden'/>
 
 
 <div id="gitalk-container"></div>
@@ -202,10 +196,10 @@ if(comment){
 
    
   <div class="box-prev-next clearfix">
-    <a class="hide pull-left" href="/">
+    <a class="show pull-left" href="/2018/04/24/SpringMVC中验证参数Bean/">
         <i class="icon icon-angle-left"></i>
     </a>
-    <a class="show pull-right" href="/2017/10/19/设计模式之策略模式/">
+    <a class="hide pull-right" href="/">
         <i class="icon icon-angle-right"></i>
     </a>
   </div>

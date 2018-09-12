@@ -12,21 +12,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
   
-    <meta name="keywords" content="java,Guava,Optional," />
+    <meta name="keywords" content="Guava," />
   
 
-  <meta name="description" content="为什么使用optional使用Optional除了简化粗鲁的if(null == object)、降低函数的复杂度、增加可读性之外，它是一种傻瓜式的防护，Optional引导编码人员主动的思考引用为null的情况。  创建方法 Optional.of(T)：获得一个Optional对象，其内部包含了一个非null的T数据类型实例，若T=null，则立刻报错。   Optional.absent()">
-<meta name="keywords" content="java,Guava,Optional">
+  <meta name="description" content="为什么使用optional使用Optional除了赋予null语义，增加了可读性，最大的优点在于它是一种傻瓜式的防护。Optional迫使你积极思考引用缺失的情况，因为你必须显式地从Optional获取引用。如同输入参数，方法的返回值也可能是null。和其他人一样，你绝对很可能会忘记别人写的方法method(a,b)会返回一个null，就好像当你实现method(a,b)时，也很可能忘记输入参数a">
+<meta name="keywords" content="Guava">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Google Guava之Optional优雅的使用null">
 <meta property="og:url" content="https://zhangyaxiao.github.io/2018/02/24/Google-Guava之Optional优雅的使用null/index.html">
 <meta property="og:site_name" content="张亚晓">
-<meta property="og:description" content="为什么使用optional使用Optional除了简化粗鲁的if(null == object)、降低函数的复杂度、增加可读性之外，它是一种傻瓜式的防护，Optional引导编码人员主动的思考引用为null的情况。  创建方法 Optional.of(T)：获得一个Optional对象，其内部包含了一个非null的T数据类型实例，若T=null，则立刻报错。   Optional.absent()">
+<meta property="og:description" content="为什么使用optional使用Optional除了赋予null语义，增加了可读性，最大的优点在于它是一种傻瓜式的防护。Optional迫使你积极思考引用缺失的情况，因为你必须显式地从Optional获取引用。如同输入参数，方法的返回值也可能是null。和其他人一样，你绝对很可能会忘记别人写的方法method(a,b)会返回一个null，就好像当你实现method(a,b)时，也很可能忘记输入参数a">
 <meta property="og:locale" content="zh">
-<meta property="og:updated_time" content="2018-04-17T01:36:58.384Z">
+<meta property="og:updated_time" content="2018-04-28T02:16:25.342Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Google Guava之Optional优雅的使用null">
-<meta name="twitter:description" content="为什么使用optional使用Optional除了简化粗鲁的if(null == object)、降低函数的复杂度、增加可读性之外，它是一种傻瓜式的防护，Optional引导编码人员主动的思考引用为null的情况。  创建方法 Optional.of(T)：获得一个Optional对象，其内部包含了一个非null的T数据类型实例，若T=null，则立刻报错。   Optional.absent()">
+<meta name="twitter:description" content="为什么使用optional使用Optional除了赋予null语义，增加了可读性，最大的优点在于它是一种傻瓜式的防护。Optional迫使你积极思考引用缺失的情况，因为你必须显式地从Optional获取引用。如同输入参数，方法的返回值也可能是null。和其他人一样，你绝对很可能会忘记别人写的方法method(a,b)会返回一个null，就好像当你实现method(a,b)时，也很可能忘记输入参数a">
 
   
 
@@ -163,7 +163,8 @@
 
   <div class="article-content">
     
-      <h1 id="为什么使用optional"><a href="#为什么使用optional" class="headerlink" title="为什么使用optional"></a>为什么使用optional</h1><p>使用Optional<t>除了简化粗鲁的if(null == object)、降低函数的复杂度、增加可读性之外，它是一种傻瓜式的防护，Optional<t>引导编码人员主动的思考引用为null的情况。</t></t></p>
+      <h1 id="为什么使用optional"><a href="#为什么使用optional" class="headerlink" title="为什么使用optional"></a>为什么使用optional</h1><p>使用Optional除了赋予null语义，增加了可读性，最大的优点在于它是一种傻瓜式的防护。Optional迫使你积极思考引用缺失的情况，因为你必须显式地从Optional获取引用。<br>如同输入参数，方法的返回值也可能是null。和其他人一样，你绝对很可能会忘记别人写的方法method(a,b)会返回一个null，就好像当你实现method(a,b)时，也很可能忘记输入参数a可以为null。将方法的返回类型指定为Optional，也可以迫使调用者思考返回的引用缺失的情形。  </p>
+<p>接口文档 <a href="https://google.github.io/guava/releases/snapshot-jre/api/docs/" target="_blank" rel="noopener">https://google.github.io/guava/releases/snapshot-jre/api/docs/</a><br>github地址 <a href="https://github.com/google/guava" target="_blank" rel="noopener">https://github.com/google/guava</a></p>
 <hr>
 <h1 id="创建方法"><a href="#创建方法" class="headerlink" title="创建方法"></a>创建方法</h1><ul>
 <li>Optional.of(T)：获得一个Optional对象，其内部包含了一个非null的T数据类型实例，若T=null，则立刻报错。  </li>
