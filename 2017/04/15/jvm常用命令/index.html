@@ -30,7 +30,8 @@
 <meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm常用命令/jmap-1.png">
 <meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm常用命令/jmap-2.png">
 <meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm常用命令/jmap-3.png">
-<meta property="og:updated_time" content="2019-07-11T06:38:36.308Z">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm常用命令/jstack-1.png">
+<meta property="og:updated_time" content="2019-07-11T06:44:08.084Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="jvm常用命令">
 <meta name="twitter:description" content="jvm常用命令jps显示当前运行的java进程以及相关参数   1命令格式:jps [option] [hostid] 常用参数    参数 解释     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传给主类main()函数的参数   -l 输出主类的全类名，如果进程执行的是Jar包，输出Jar路径   -v 输出虚拟机进程启动时JVM参数     jinfo以输出并修改">
@@ -135,7 +136,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm常用命令"><span class="toc-text">jvm常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#jps"><span class="toc-text">jps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jinfo"><span class="toc-text">jinfo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstat"><span class="toc-text">jstat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jmap"><span class="toc-text">jmap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstack"><span class="toc-text">jstack</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm常用命令"><span class="toc-text">jvm常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#jps"><span class="toc-text">jps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jinfo"><span class="toc-text">jinfo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstat"><span class="toc-text">jstat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jmap"><span class="toc-text">jmap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstack"><span class="toc-text">jstack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#例子"><span class="toc-text">例子</span></a></li></ol></li></ol>
   </div>
 
 
@@ -353,6 +354,8 @@
 </tbody>
 </table>
 <p>jstack可以定位到线程堆栈，根据堆栈信息我们可以定位到具体代码，所以它在JVM性能调优中使用得非常多</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>下面我们来一个实例找出某个Java进程中最耗费CPU的Java线程并定位堆栈信息，用到的命令有ps、top、printf、jstack、grep<br>找出该进程内最耗费CPU的线程，可以使用top -Hp pid输出如下：<br><img src="/2017/04/15/jvm常用命令/jstack-1.png" alt="jstack-1"><br>TIME列就是各个Java线程耗费的CPU时间，CPU时间最长的是线程ID为12811的线程，用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printf &quot;%x\n&quot; 12811</span><br></pre></td></tr></table></figure></p>
+<p>得到12811的十六进制值为320b，用jstack来输出进程12811的堆栈信息，然后根据线程ID的十六进制值grep，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack 12809 |  grep &apos;320&apos; -C20</span><br></pre></td></tr></table></figure></p>
 
     
   </div>
