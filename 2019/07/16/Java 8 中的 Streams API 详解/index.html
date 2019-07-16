@@ -7,7 +7,7 @@
 <head>
   <meta charset="utf-8">
   
-  <title>java8——Streams | 张亚晓</title>
+  <title>Java 8 中的 Streams API 详解 | 张亚晓</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -18,17 +18,17 @@
   <meta name="description" content="原文 https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/index.html Java 8 中的 Streams API 详解为什么需要 StreamStream 作为 Java 8 的一大亮点，它与 java.io 包里的 InputStream 和 OutputStream 是完全不同的概念。它也不同于 StAX 对">
 <meta name="keywords" content="java">
 <meta property="og:type" content="article">
-<meta property="og:title" content="java8——Streams">
-<meta property="og:url" content="https://zhangyaxiao.github.io/2019/07/16/java8——Streams/index.html">
+<meta property="og:title" content="Java 8 中的 Streams API 详解">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2019/07/16/Java 8 中的 Streams API 详解/index.html">
 <meta property="og:site_name" content="张亚晓">
 <meta property="og:description" content="原文 https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/index.html Java 8 中的 Streams API 详解为什么需要 StreamStream 作为 Java 8 的一大亮点，它与 java.io 包里的 InputStream 和 OutputStream 是完全不同的概念。它也不同于 StAX 对">
 <meta property="og:locale" content="zh">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2019/07/16/java8——Streams/streams1.png">
-<meta property="og:updated_time" content="2019-07-16T09:26:14.574Z">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2019/07/16/Java%208%20中的%20Streams%20API%20详解/streams1.png">
+<meta property="og:updated_time" content="2019-07-16T09:35:49.686Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="java8——Streams">
+<meta name="twitter:title" content="Java 8 中的 Streams API 详解">
 <meta name="twitter:description" content="原文 https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/index.html Java 8 中的 Streams API 详解为什么需要 StreamStream 作为 Java 8 的一大亮点，它与 java.io 包里的 InputStream 和 OutputStream 是完全不同的概念。它也不同于 StAX 对">
-<meta name="twitter:image" content="https://zhangyaxiao.github.io/2019/07/16/java8——Streams/streams1.png">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2019/07/16/Java%208%20中的%20Streams%20API%20详解/streams1.png">
 
   
 
@@ -135,9 +135,9 @@
 
 
 <div class="content content-post CENTER">
-   <article id="post-java8——Streams" class="article article-type-post" itemprop="blogPost">
+   <article id="post-Java 8 中的 Streams API 详解" class="article article-type-post" itemprop="blogPost">
   <header class="article-header">
-    <h1 class="post-title">java8——Streams</h1>
+    <h1 class="post-title">Java 8 中的 Streams API 详解</h1>
 
     <div class="article-meta">
       <span>
@@ -191,7 +191,7 @@
 </ul>
 <p>Stream 的另外一大特点是，数据源本身可以是无限的。</p>
 <h3 id="流的构成"><a href="#流的构成" class="headerlink" title="流的构成"></a>流的构成</h3><p>当我们使用一个流的时候，通常包括三个基本步骤：<br>获取一个数据源（source）→ 数据转换→执行操作获取想要的结果，每次转换原有 Stream 对象不改变，返回一个新的 Stream 对象（可以有多次转换），这就允许对其操作可以像链条一样排列，变成一个管道，如下图所示。</p>
-<p><img src="/2019/07/16/java8——Streams/streams1.png" alt="streams1"></p>
+<p><img src="/2019/07/16/Java 8 中的 Streams API 详解/streams1.png" alt="streams1"></p>
 <p>有多种方式生成 Stream Source：</p>
 <ul>
 <li>从 Collection 和数组<ul>
