@@ -24,7 +24,7 @@
 <meta property="og:description" content="原文 https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/index.html 1. 为什么需要 StreamStream 作为 Java 8 的一大亮点，它与 java.io 包里的 InputStream 和 OutputStream 是完全不同的概念。它也不同于 StAX 对 XML 解析的 Stream，也不是 Am">
 <meta property="og:locale" content="zh">
 <meta property="og:image" content="https://zhangyaxiao.github.io/2019/07/16/Java%208%20中的%20Streams%20API%20详解/streams1.png">
-<meta property="og:updated_time" content="2019-07-16T09:48:02.798Z">
+<meta property="og:updated_time" content="2019-07-19T06:36:21.074Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java 8 中的 Streams API 详解">
 <meta name="twitter:description" content="原文 https://www.ibm.com/developerworks/cn/java/j-lo-java8streamapi/index.html 1. 为什么需要 StreamStream 作为 Java 8 的一大亮点，它与 java.io 包里的 InputStream 和 OutputStream 是完全不同的概念。它也不同于 StAX 对 XML 解析的 Stream，也不是 Am">
@@ -140,7 +140,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-为什么需要-Stream"><span class="toc-text">1. 为什么需要 Stream</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-什么是聚合操作"><span class="toc-text">2. 什么是聚合操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Stream-总览"><span class="toc-text">3. Stream 总览</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-什么是流"><span class="toc-text">3.1 什么是流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-流的构成"><span class="toc-text">3.2 流的构成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-流的使用详解"><span class="toc-text">4. 流的使用详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-流的构造与转换"><span class="toc-text">4.1 流的构造与转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-流的操作"><span class="toc-text">4.2 流的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-map-flatMap"><span class="toc-text">4.2.1 map/flatMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-2-filter"><span class="toc-text">4.2.2 filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3-forEach"><span class="toc-text">4.2.3 forEach</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-4-findFirst"><span class="toc-text">4.2.4 findFirst</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-5-reduce"><span class="toc-text">4.2.5 reduce</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-6-limit-skip"><span class="toc-text">4.2.6 limit/skip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-7-sorted"><span class="toc-text">4.2.7 sorted</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-8-min-max-distinct"><span class="toc-text">4.2.8 min/max/distinct</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-9-Match"><span class="toc-text">4.2.9 Match</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-进阶：自己生成流"><span class="toc-text">4.3 进阶：自己生成流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-Stream-generate"><span class="toc-text">4.3.1 Stream.generate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-Stream-iterate"><span class="toc-text">4.3.2 Stream.iterate</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-进阶：用-Collectors-来进行-reduction-操作"><span class="toc-text">4.4 进阶：用 Collectors 来进行 reduction 操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-groupingBy-partitioningBy"><span class="toc-text">4.4.1 groupingBy/partitioningBy</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-结束语"><span class="toc-text">5. 结束语</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-为什么需要-Stream"><span class="toc-text">1. 为什么需要 Stream</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-什么是聚合操作"><span class="toc-text">2. 什么是聚合操作</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-Stream-总览"><span class="toc-text">3. Stream 总览</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-什么是流"><span class="toc-text">3.1 什么是流</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-流的构成"><span class="toc-text">3.2 流的构成</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-流的使用详解"><span class="toc-text">4. 流的使用详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-流的构造与转换"><span class="toc-text">4.1 流的构造与转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-流的操作和API"><span class="toc-text">4.2 流的操作和API</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-map-flatMap"><span class="toc-text">4.2.1 map/flatMap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-2-filter"><span class="toc-text">4.2.2 filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3-forEach"><span class="toc-text">4.2.3 forEach</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-4-findFirst"><span class="toc-text">4.2.4 findFirst</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-5-reduce"><span class="toc-text">4.2.5 reduce</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-6-limit-skip"><span class="toc-text">4.2.6 limit/skip</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-7-sorted"><span class="toc-text">4.2.7 sorted</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-8-min-max-distinct"><span class="toc-text">4.2.8 min/max/distinct</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-9-Match"><span class="toc-text">4.2.9 Match</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-进阶：自己生成流"><span class="toc-text">4.3 进阶：自己生成流</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-Stream-generate"><span class="toc-text">4.3.1 Stream.generate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-Stream-iterate"><span class="toc-text">4.3.2 Stream.iterate</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-进阶：用-Collectors-来进行-reduction-操作"><span class="toc-text">4.4 进阶：用 Collectors 来进行 reduction 操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-1-groupingBy-partitioningBy"><span class="toc-text">4.4.1 groupingBy/partitioningBy</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-结束语"><span class="toc-text">5. 结束语</span></a></li></ol>
   </div>
 
 
@@ -252,7 +252,17 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 清单 5. 数值流的构造</span></span><br><span class="line">IntStream.of(<span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;).forEach(System.out::println);</span><br><span class="line">IntStream.range(<span class="number">1</span>, <span class="number">3</span>).forEach(System.out::println);</span><br><span class="line">IntStream.rangeClosed(<span class="number">1</span>, <span class="number">3</span>).forEach(System.out::println);</span><br></pre></td></tr></table></figure>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 清单 6. 流转换为其它数据结构</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 1. Array</span></span><br><span class="line">String[] strArray1 = stream.toArray(String[]::<span class="keyword">new</span>);</span><br><span class="line"><span class="comment">// 2. Collection</span></span><br><span class="line">List&lt;String&gt; list1 = stream.collect(Collectors.toList());</span><br><span class="line">List&lt;String&gt; list2 = stream.collect(Collectors.toCollection(ArrayList::<span class="keyword">new</span>));</span><br><span class="line">Set set1 = stream.collect(Collectors.toSet());</span><br><span class="line">Stack stack1 = stream.collect(Collectors.toCollection(Stack::<span class="keyword">new</span>));</span><br><span class="line"><span class="comment">// 3. String</span></span><br><span class="line">String str = stream.collect(Collectors.joining()).toString();</span><br></pre></td></tr></table></figure>
 <p>一个 Stream 只可以使用一次，上面的代码为了简洁而重复使用了数次。</p>
-<h2 id="4-2-流的操作"><a href="#4-2-流的操作" class="headerlink" title="4.2 流的操作"></a>4.2 流的操作</h2><p>接下来，当把一个数据结构包装成 Stream 后，就要开始对里面的元素进行各类操作了。常见的操作可以归类如下。</p>
+<p>流可以顺序执行，也可以在parallel中执行。 此执行模式是流的属性。 流被创建为具有顺序或并行执行的初始选择。 （例如， Collection.stream()创建一个顺序流，并且Collection.parallelStream()创建一个并行的）。执行模式的选择可以由BaseStream.sequential()或BaseStream.parallel()方法修改，并且可以使用BaseStream.isParallel()方法进行查询。</p>
+<p><strong>使用parallelStream时需要注意</strong></p>
+<blockquote>
+<ol>
+<li>使用parallelStream可以简洁高效的写出并发代码。  </li>
+<li><strong>parallelStream并行执行是无序的。</strong>  </li>
+<li><strong>parallelStream提供了更简单的并发执行的实现，但并不意味着更高的性能，它是使用要根据具体的应用场景。如果cpu资源紧张parallelStream不会带来性能提升；如果存在频繁的线程切换反而会降低性能。</strong>  </li>
+<li><strong>任务之间最好是状态无关的，因为parallelStream默认是非线程安全的，可能带来结果的不确定性。</strong>   </li>
+</ol>
+</blockquote>
+<h2 id="4-2-流的操作和API"><a href="#4-2-流的操作和API" class="headerlink" title="4.2 流的操作和API"></a>4.2 流的操作和API</h2><p>接下来，当把一个数据结构包装成 Stream 后，就要开始对里面的元素进行各类操作了。常见的操作可以归类如下。</p>
 <ul>
 <li>Intermediate：<ul>
 <li>map (mapToInt, flatMap 等)、 filter、 distinct、 sorted、 peek、 limit、 skip、 parallel、 sequential、 unordered</li>
@@ -267,6 +277,264 @@
 </ul>
 </li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>返回</th>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>allMatch(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回此流的所有元素是否与提供的谓词匹配。</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>anyMatch(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回此流的任何元素是否与提供的谓词匹配。</td>
+</tr>
+<tr>
+<td>static <t> Stream.Builder<t></t></t></td>
+<td>builder()</td>
+<td>返回一个 Stream的构建器。</td>
+</tr>
+<tr>
+<td>&lt;R,A&gt; R</td>
+<td>collect(Collector&lt;? super T,A,R&gt; collector)</td>
+<td>使用 Collector对此流的元素执行 mutable reduction Collector 。</td>
+</tr>
+<tr>
+<td><r> R</r></td>
+<td>collect(Supplier<r> supplier, BiConsumer&lt;R,? super T&gt; accumulator, BiConsumer&lt;R,R&gt; combiner)</r></td>
+<td>对此流的元素执行 mutable reduction操作。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>concat(Stream&lt;? extends T&gt; a, Stream&lt;? extends T&gt; b)</td>
+<td>创建一个懒惰连接的流，其元素是第一个流的所有元素，后跟第二个流的所有元素。</td>
+</tr>
+<tr>
+<td>long</td>
+<td>count()</td>
+<td>返回此流中的元素数。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>distinct()</td>
+<td>返回由该流的不同元素（根据 Object.equals(Object) ）组成的流。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>empty()</td>
+<td>返回一个空的顺序 Stream 。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>filter(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回由与此给定谓词匹配的此流的元素组成的流。</td>
+</tr>
+<tr>
+<td>Optional<t></t></td>
+<td>findAny()</td>
+<td>返回描述流的一些元素的Optional如果流为空，则返回一个空的Optional 。</td>
+</tr>
+<tr>
+<td>Optional<t></t></td>
+<td>findFirst()</td>
+<td>返回描述此流的第一个元素的Optional如果流为空，则返回一个空的Optional 。</td>
+</tr>
+<tr>
+<td><r> Stream<r></r></r></td>
+<td>flatMap(Function&lt;? super T,? extends Stream&lt;? extends R&gt;&gt; mapper)</td>
+<td>返回由通过将提供的映射函数应用于每个元素而产生的映射流的内容来替换该流的每个元素的结果的流。</td>
+</tr>
+<tr>
+<td>DoubleStream</td>
+<td>flatMapToDouble(Function&lt;? super T,? extends DoubleStream&gt; mapper)</td>
+<td>返回一个 DoubleStream ，其中包含将该流的每个元素替换为通过将提供的映射函数应用于每个元素而产生的映射流的内容的结果。</td>
+</tr>
+<tr>
+<td>IntStream</td>
+<td>flatMapToInt(Function&lt;? super T,? extends IntStream&gt; mapper)</td>
+<td>返回一个 IntStream ，其中包含将该流的每个元素替换为通过将提供的映射函数应用于每个元素而产生的映射流的内容的结果。</td>
+</tr>
+<tr>
+<td>LongStream</td>
+<td>flatMapToLong(Function&lt;? super T,? extends LongStream&gt; mapper)</td>
+<td>返回一个 LongStream ，其中包含将该流的每个元素替换为通过将提供的映射函数应用于每个元素而产生的映射流的内容的结果。</td>
+</tr>
+<tr>
+<td>void</td>
+<td>forEach(Consumer&lt;? super T&gt; action)</td>
+<td>对此流的每个元素执行操作。</td>
+</tr>
+<tr>
+<td>void</td>
+<td>forEachOrdered(Consumer&lt;? super T&gt; action)</td>
+<td>如果流具有定义的遇到顺序，则以流的遇到顺序对该流的每个元素执行操作。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>generate(Supplier<t> s)</t></td>
+<td>返回无限顺序无序流，其中每个元素由提供的 Supplier 。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>iterate(T seed, UnaryOperator<t> f)</t></td>
+<td>返回有序无限连续Stream由函数的迭代应用产生f至初始元素seed ，产生Stream包括seed ， f(seed) ， f(f(seed)) ，等第一元件（位置0在） Stream将是提供seed 。 对于n &gt; 0 ，位置n的元素将是将函数f应用于位置n - 1的元素的n - 1 。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>limit(long maxSize)</td>
+<td>返回由此流的元素组成的流，截短长度不能超过 maxSize 。</td>
+</tr>
+<tr>
+<td><r> Stream<r></r></r></td>
+<td>map(Function&lt;? super T,? extends R&gt; mapper)</td>
+<td>返回由给定函数应用于此流的元素的结果组成的流。</td>
+</tr>
+<tr>
+<td>DoubleStream</td>
+<td>mapToDouble(ToDoubleFunction&lt;? super T&gt; mapper)</td>
+<td>返回一个 DoubleStream ，其中包含将给定函数应用于此流的元素的结果。</td>
+</tr>
+<tr>
+<td>IntStream</td>
+<td>mapToInt(ToIntFunction&lt;? super T&gt; mapper)</td>
+<td>返回一个 IntStream ，其中包含将给定函数应用于此流的元素的结果。</td>
+</tr>
+<tr>
+<td>LongStream</td>
+<td>mapToLong(ToLongFunction&lt;? super T&gt; mapper)</td>
+<td>返回一个 LongStream ，其中包含将给定函数应用于此流的元素的结果。</td>
+</tr>
+<tr>
+<td>Optional<t></t></td>
+<td>max(Comparator&lt;? super T&gt; comparator)</td>
+<td>根据提供的 Comparator返回此流的最大元素。</td>
+</tr>
+<tr>
+<td>Optional<t></t></td>
+<td>min(Comparator&lt;? super T&gt; comparator)</td>
+<td>根据提供的 Comparator返回此流的最小元素。</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>noneMatch(Predicate&lt;? super T&gt; predicate)</td>
+<td>返回此流的元素是否与提供的谓词匹配。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>of(T… values)</td>
+<td>返回其元素是指定值的顺序排序流。</td>
+</tr>
+<tr>
+<td>static <t> Stream<t></t></t></td>
+<td>of(T t)</td>
+<td>返回包含单个元素的顺序 Stream 。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>peek(Consumer&lt;? super T&gt; action)</td>
+<td>返回由该流的元素组成的流，另外在从生成的流中消耗元素时对每个元素执行提供的操作。</td>
+</tr>
+<tr>
+<td>Optional<t></t></td>
+<td>reduce(BinaryOperator<t> accumulator)</t></td>
+<td>使用 associative累积函数对此流的元素执行 reduction ，并返回描述减小值的 Optional （如果有）。</td>
+</tr>
+<tr>
+<td>T</td>
+<td>reduce(T identity, BinaryOperator<t> accumulator)</t></td>
+<td>使用提供的身份值和 associative累积功能对此流的元素执行 reduction ，并返回减小的值。</td>
+</tr>
+<tr>
+<td><u> U</u></td>
+<td>reduce(U identity, BiFunction&lt;U,? super T,U&gt; accumulator, BinaryOperator<u> combiner)</u></td>
+<td>执行 reduction在此流中的元素，使用所提供的身份，积累和组合功能。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>skip(long n)</td>
+<td>在丢弃流的第一个 n元素后，返回由该流的 n元素组成的流。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>sorted()</td>
+<td>返回由此流的元素组成的流，根据自然顺序排序。</td>
+</tr>
+<tr>
+<td>Stream<t></t></td>
+<td>sorted(Comparator&lt;? super T&gt; comparator)</td>
+<td>返回由该流的元素组成的流，根据提供的 Comparator进行排序。</td>
+</tr>
+<tr>
+<td>Object[]</td>
+<td>toArray()</td>
+<td>返回一个包含此流的元素的数组。</td>
+</tr>
+<tr>
+<td><a> A[]</a></td>
+<td>toArray(IntFunction&lt;A[]&gt; generator)</td>
+<td>使用提供的 generator函数返回一个包含此流的元素的数组，以分配返回的数组，以及分区执行或调整大小可能需要的任何其他数组。</td>
+</tr>
+</tbody>
+</table>
+<p>实现BaseStream的方法</p>
+<table>
+<thead>
+<tr>
+<th>返回</th>
+<th>方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>void</td>
+<td>close()</td>
+<td>关闭此流，导致此流管道的所有关闭处理程序被调用。</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>isParallel()</td>
+<td>返回此流是否要执行终端操作，将并行执行。</td>
+</tr>
+<tr>
+<td>Iterator<t></t></td>
+<td>iterator()</td>
+<td>返回此流的元素的迭代器。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>onClose(Runnable closeHandler)</td>
+<td>返回带有附加关闭处理程序的等效流。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>parallel()</td>
+<td>返回平行的等效流。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>sequential()</td>
+<td>返回顺序的等效流。</td>
+</tr>
+<tr>
+<td>Spliterator<t></t></td>
+<td>spliterator()</td>
+<td>返回此流的元素的拼接器。</td>
+</tr>
+<tr>
+<td>S</td>
+<td>unordered()</td>
+<td>返回等效的流，即 unordered 。</td>
+</tr>
+</tbody>
+</table>
 <p>我们下面看一下 Stream 的比较典型用法。</p>
 <h3 id="4-2-1-map-flatMap"><a href="#4-2-1-map-flatMap" class="headerlink" title="4.2.1 map/flatMap"></a><strong>4.2.1 map/flatMap</strong></h3><p>我们先来看 map。如果你熟悉 scala 这类函数式语言，对这个方法应该很了解，它的作用就是把 input Stream 的每一个元素，映射成 output Stream 的另外一个元素。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这清单 7. 转换大写</span></span><br><span class="line"></span><br><span class="line">List&lt;String&gt; output = wordList.stream().</span><br><span class="line">    map(String::toUpperCase).</span><br><span class="line">    collect(Collectors.toList());</span><br></pre></td></tr></table></figure>
