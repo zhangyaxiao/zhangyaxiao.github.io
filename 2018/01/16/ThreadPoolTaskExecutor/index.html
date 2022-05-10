@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>ThreadPoolTaskExecutor | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="spring," />
+  
+
+  <meta name="description" content="我们在开发过程中经常要用到线程池，线程池应该统一管理起来，而不是随用随建。ThreadPoolTaskExecutor——将线程池交给spring管理  ThreadPoolTaskExecutor配置123456789101112131415&lt;!-- spring thread pool executor --&gt;           &lt;bean id&#x3D;&quot;taskExe">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ThreadPoolTaskExecutor">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/01/16/ThreadPoolTaskExecutor/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="我们在开发过程中经常要用到线程池，线程池应该统一管理起来，而不是随用随建。ThreadPoolTaskExecutor——将线程池交给spring管理  ThreadPoolTaskExecutor配置123456789101112131415&lt;!-- spring thread pool executor --&gt;           &lt;bean id&#x3D;&quot;taskExe">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-01-16T07:51:47.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.646Z">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ThreadPoolTaskExecutor%E9%85%8D%E7%BD%AE"><span class="toc-text">ThreadPoolTaskExecutor配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#execute-Runable-%E6%96%B9%E6%B3%95%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="toc-text">execute(Runable)方法执行过程</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-ThreadPoolTaskExecutor" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">ThreadPoolTaskExecutor</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.01.16</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>我们在开发过程中经常要用到线程池，线程池应该统一管理起来，而不是随用随建。ThreadPoolTaskExecutor——将线程池交给spring管理</p>
+<hr>
+<h1 id="ThreadPoolTaskExecutor配置"><a href="#ThreadPoolTaskExecutor配置" class="headerlink" title="ThreadPoolTaskExecutor配置"></a>ThreadPoolTaskExecutor配置</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- spring thread pool executor --&gt;</span>           </span><br><span class="line"><span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;taskExecutor&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 线程池维护线程的最少数量 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;corePoolSize&quot;</span> <span class="attr">value</span>=<span class="string">&quot;5&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 允许的空闲时间 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;keepAliveSeconds&quot;</span> <span class="attr">value</span>=<span class="string">&quot;200&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 线程池维护线程的最大数量 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;maxPoolSize&quot;</span> <span class="attr">value</span>=<span class="string">&quot;10&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 缓存队列 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;queueCapacity&quot;</span> <span class="attr">value</span>=<span class="string">&quot;20&quot;</span> /&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 对拒绝task的处理策略 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;rejectedExecutionHandler&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>Reject策略预定义有四种： </p>
+<ol>
+<li><strong>ThreadPoolExecutor.AbortPolicy</strong>，默认的策略,处理程序遭到拒绝将抛出运行时 RejectedExecutionException。 </li>
+<li><strong>ThreadPoolExecutor.CallerRunsPolicy</strong> ,调用者的线程会执行该任务,如果执行器已关闭,则丢弃. </li>
+<li><strong>ThreadPoolExecutor.DiscardPolicy</strong>，不能执行的任务将被丢弃. </li>
+<li><strong>ThreadPoolExecutor.DiscardOldestPolicy</strong>，如果执行程序尚未关闭，则位于工作队列头部的任务将被删除，然后重试执行程序（如果再次失败，则重复此过程）.</li>
+</ol>
+<hr>
+<h1 id="execute-Runable-方法执行过程"><a href="#execute-Runable-方法执行过程" class="headerlink" title="execute(Runable)方法执行过程"></a>execute(Runable)方法执行过程</h1><ul>
+<li><p>如果此时线程池中的数量小于corePoolSize，即使线程池中的线程都处于空闲状态，也要创建新的线程来处理被添加的任务。</p>
+</li>
+<li><p>如果此时线程池中的数量等于 corePoolSize，但是缓冲队列 workQueue未满，那么任务被放入缓冲队列。</p>
+</li>
+<li><p>如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量小于maxPoolSize，建新的线程来处理被添加的任务。</p>
+</li>
+<li><p>如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maxPoolSize，那么通过handler所指定的策略来处理此任务。也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程 maximumPoolSize，如果三者都满了，使用handler处理被拒绝的任务。</p>
+</li>
+<li><p>当线程池中的线程数量大于corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止。这样，线程池可以动态的调整池中的线程数。</p>
+</li>
+</ul>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = springxcc id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/01/11/java%E5%9B%9B%E7%A7%8D%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%AE%80%E4%BB%8B%EF%BC%8C%E4%BD%BF%E7%94%A8/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/01/31/java%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E8%A7%A3/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>用Fiddler在Android上抓包 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="工具," />
+  
+
+  <meta name="description" content="转载 Android 使用Fiddler抓取Https请求 在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？这就是今天要说的一个抓包工具Fiddler了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用Fiddler在Android上抓包">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="转载 Android 使用Fiddler抓取Https请求 在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？这就是今天要说的一个抓包工具Fiddler了">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/2.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/3.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/4.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/5.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/6.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/7.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/8.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/9.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/10.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/11.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/12.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/13.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/14.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/15.png">
+<meta property="article:published_time" content="2018-04-23T02:05:58.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.654Z">
+<meta property="article:tag" content="工具">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%8F%90"><span class="toc-text">前提</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85Fiddler"><span class="toc-text">下载安装Fiddler</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%8B%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="toc-text">手机配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6"><span class="toc-text">安装证书</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%A6%E6%88%AAhttps"><span class="toc-text">拦截https</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Inspectors"><span class="toc-text">Inspectors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Filters"><span class="toc-text">Filters</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-用Fiddler在Android上抓包" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">用Fiddler在Android上抓包</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.04.23</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <p>转载 <a target="_blank" rel="noopener" href="https://blog.csdn.net/mackkill/article/details/70746702">Android 使用Fiddler抓取Https请求</a></p>
+<p>在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？<br>这就是今天要说的一个抓包工具Fiddler了，Fiddler默认是抓取http类型的接口，而想要查看https类型的接口就需要安装Fiddler证书。接下来一步步来看：</p>
+<hr>
+<h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>本文是在Windows 7 环境下进行，并且需要电脑和手机处于同一局域网。如果是台式机的朋友可以使用无线网卡；当然使用模拟器也可以。</p>
+<hr>
+<h1 id="下载安装Fiddler"><a href="#下载安装Fiddler" class="headerlink" title="下载安装Fiddler"></a>下载安装Fiddler</h1><ol>
+<li><p>首先安装Fiddler较新的版本，这里不建议安装老的版本，因为可能会出问题，下载传送门：Fiddler:<a target="_blank" rel="noopener" href="http://www.telerik.com/fiddler">http://www.telerik.com/fiddler</a></p>
+</li>
+<li><p>安装直接默认就行，安装完后打开Fiddler，点击工具栏的Tools -&gt; Telerik Fiddler Options。选中HTTPS 勾选如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png" alt="1"><br>中途会弹出安全方面的弹窗直接无视就行，毕竟我们本来干的就不是什么正常的事。</p>
+</li>
+<li>接着生成证书，还是HTTPS 里面如上图，点击右边的Actions选择Export Root Certificate to Desktop。意思是导出证书并存至桌面。记住位置一会会用到。如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/2.png" alt="2"></li>
+<li>切换到Connections栏，就在HTTPS旁边，勾选如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/3.png" alt="3"><br>这里端口号8888可以自己指定，这里我们保持默认就行。设置好后会提示重新启动Fiddler，如果没有提示我们也重新启动一下。<br>好了客户端安装完了，接下来配置手机端。</li>
+</ol>
+<hr>
+<h1 id="手机配置"><a href="#手机配置" class="headerlink" title="手机配置"></a>手机配置</h1><ol>
+<li>首先使用ipconfig /all命令获取电脑的ip地址（这里我的是172.20.1.67）：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/4.png" alt="4"></li>
+<li>然后在手机wifi高级选项里填上你的代理ip及端口8888：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/5.png" alt="5"><br>最后就是在手机端安装证书了。</li>
+</ol>
+<hr>
+<h1 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书"></a>安装证书</h1><ol>
+<li>找到先前保存至桌面的证书，然后拷贝到手机sd目录：<br>ps：这里楼主的手机电脑无法访问到sd卡很是蛋疼~~~，于是我是通过qq传送的。。。。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/6.png" alt="6"></li>
+<li>点击设置——&gt;安全——&gt;从设备存储空间安装——&gt;从sd卡中找到证书，点击安装即可（直接点击是无法安装的，不信你可以试试）。安装后会让你设置锁屏，然后取个名字就完事了。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/7.png" alt="7"><br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/8.png" alt="8"><br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/9.png" alt="9"></li>
+</ol>
+<p>好了，至此配置方面就完事了，接着就可以开心的拦截https请求了。<br><strong>ps：如果有拦截还是没有成功的情况请检查下上面的配置选项，因为楼主遇到过选项重置的情况，再就是重新安装一遍证书。</strong></p>
+<hr>
+<h1 id="拦截https"><a href="#拦截https" class="headerlink" title="拦截https"></a>拦截https</h1><p>这时候请求一条https数据，然后在Fiddler中查看信息：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/10.png" alt="10"><br>如图可以看见有A、B两个区域：<br>A区域主要是显示当前设备请求过来的链接信息：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/11.png" alt="11"><br>“#”代表的是相应的请求类型，这里在网上找了一张图，可能会有图标的变化，但大致能理解：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/12.png" alt="12"><br>在A区域选中一条请求对应B区域会显示一些我们能进行的操作，这里主要了解下Inspectors、Filters：</p>
+<h2 id="Inspectors"><a href="#Inspectors" class="headerlink" title="Inspectors"></a>Inspectors</h2><p>分为上下两个显示部分，上半部分显示的是请求头参数部分，下半部分是响应体部分。对于每一部分，提供了多种不同格式查看每个请求和响应的内容。JPG 格式使用 ImageView 就可以看到图片，使用 TextView 可以看到响应的内容。Raw标签可以查看原始的符合HTTP标准的请求和响应头。Auth则可以查看授权Proxy-Authorization 和 Authorization的相关信息。JSON能查看格式化好了的json类型数据。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/13.png" alt="13"><br>如果发现Textview显示乱码的话，切换到Transformer 取消Chunked Transfer-Encoding勾选，选择 None即可。</p>
+<p>这里还有一点：如果嫌这个界面显示不好看，Fiddler也为我们提供了简化的独立界面，在A区域中选中一条请求右键选择inspect in New Window… 即可：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/14.png" alt="14"></p>
+<h2 id="Filters"><a href="#Filters" class="headerlink" title="Filters"></a>Filters</h2><p>跟着一步步做下来的同学肯定会诧异：为啥我的A区域显示特别乱，各种乱七八糟的请求都有，而楼主的是那么的干净丝滑~~~。其实这里就是通过配置Filters的过滤规则如下图示：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/15.png" alt="15"><br>首先选中Use Filters，Hosts里面有两个下拉选框，第一个是选择过滤内网和外网；第二个选择过滤条件，这里选择Show only the following Hosts （只显示以下允许的域名）。最后点击右侧的Actions按钮Run Filterset now 即可。</p>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = yfiddlerzb id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/04/17/%E5%85%B3%E4%BA%8E%E7%9B%91%E5%90%AC%E5%99%A8-%E8%BF%87%E6%BB%A4%E5%99%A8-%E6%8B%A6%E6%88%AA%E5%99%A8%E7%9A%84%E4%BD%BF%E7%94%A8/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/04/24/SpringMVC%E4%B8%AD%E9%AA%8C%E8%AF%81%E5%8F%82%E6%95%B0Bean/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

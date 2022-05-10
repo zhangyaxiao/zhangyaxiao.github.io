@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>SpringMVC中验证参数Bean | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="spring," />
+  
+
+  <meta name="description" content="环境准备在项目中添加以下依赖   maven 12345&lt;dependency&gt;    &lt;groupId&gt;javax.validation&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;validation-api&lt;&#x2F;artifactId&gt;    &lt;version&gt;$&amp;#123;validation_version&amp;#12">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringMVC中验证参数Bean">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/04/24/SpringMVC%E4%B8%AD%E9%AA%8C%E8%AF%81%E5%8F%82%E6%95%B0Bean/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="环境准备在项目中添加以下依赖   maven 12345&lt;dependency&gt;    &lt;groupId&gt;javax.validation&lt;&#x2F;groupId&gt;    &lt;artifactId&gt;validation-api&lt;&#x2F;artifactId&gt;    &lt;version&gt;$&amp;#123;validation_version&amp;#12">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-04-24T10:47:05.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.646Z">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B8%B8%E7%94%A8%E7%9A%84%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3%E7%A4%BA%E4%BE%8B"><span class="toc-text">常用的校验注解示例</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%A1%E9%AA%8C%E7%B1%BB%E6%96%B9%E6%B3%95%E4%B8%AD%E7%9A%84%E8%87%AA%E5%AE%9A%E4%B9%89%E5%AF%B9%E8%B1%A1"><span class="toc-text">校验类方法中的自定义对象</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E-Valid%E5%92%8C-Validated%E7%9A%84%E5%8C%BA%E5%88%AB%E8%81%94%E7%B3%BB"><span class="toc-text">关于@Valid和@Validated的区别联系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E6%A0%A1%E9%AA%8C"><span class="toc-text">分组校验</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%A1%E9%AA%8C%E6%B3%A8%E8%A7%A3"><span class="toc-text">自定义校验注解</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-SpringMVC中验证参数Bean" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">SpringMVC中验证参数Bean</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.04.24</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h1><p>在项目中添加以下依赖  </p>
+<p>maven</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.validation<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>validation-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;validation_version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>spring配置文件中增加<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h1 id="常用的校验注解示例"><a href="#常用的校验注解示例" class="headerlink" title="常用的校验注解示例"></a>常用的校验注解示例</h1><p><a target="_blank" rel="noopener" href="http://beanvalidation.org/2.0/spec/#builtinconstraints">相关校验注解文档</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//该参数必须为空</span></span><br><span class="line"><span class="meta">@Null(message = &quot;无需ID&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line"><span class="comment">//根据正则校验手机号是否是由数字组成</span></span><br><span class="line"><span class="meta">@Pattern(regexp = &quot;^\\d&#123;11&#125;$&quot;, message = &quot;手机格式不正确,不是11位&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String telephone;</span><br><span class="line"></span><br><span class="line"><span class="comment">//校验该对象是否为null</span></span><br><span class="line"><span class="comment">//对于String来说，空字符串可通过校验，所以String应该使用@NotBlank进行校验，此处仅做示例而已。</span></span><br><span class="line"><span class="meta">@NotNull(message = &quot;联系人不能为空&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String friendName;</span><br><span class="line"></span><br><span class="line"><span class="comment">//校验对象是否是空对象，可用于Array,Collection,Map,String</span></span><br><span class="line"><span class="meta">@NotEmpty(message = &quot;家庭成员不能为空&quot;)</span></span><br><span class="line"><span class="keyword">private</span> List families;</span><br><span class="line"></span><br><span class="line"><span class="comment">//校验长度，可以用于Array,Collection,Map,String</span></span><br><span class="line"><span class="meta">@Size(min = 4, max = 8, message = &quot;用户名长度错误 by size&quot;)</span></span><br><span class="line"><span class="comment">//校验长度，只能用于String</span></span><br><span class="line"><span class="meta">@Length(min = 4, max = 8, message = &quot;用户名长度错误 by length&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String username;</span><br><span class="line"></span><br><span class="line"><span class="comment">//javax校验</span></span><br><span class="line"><span class="meta">@Max(value = 200, message = &quot;年龄一般不会超过200 by max&quot;)</span></span><br><span class="line"><span class="meta">@Min(value = 1, message = &quot;年龄一般不能小于1 by min&quot;)</span></span><br><span class="line"><span class="comment">//hibernate校验，效果等同</span></span><br><span class="line"><span class="meta">@Range(min = 0, max = 200, message = &quot;年龄范围在0-200之间 by range&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line"><span class="comment">//校验参数是否是False, 相反的是@AssertTrue</span></span><br><span class="line"><span class="meta">@AssertFalse(message = &quot;用户初始化无需冻结&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Boolean lock;</span><br><span class="line"></span><br><span class="line"><span class="comment">//String专用</span></span><br><span class="line"><span class="meta">@NotBlank(message = &quot;密码不能为空&quot;)</span></span><br><span class="line"><span class="meta">@Size(min = 6, max = 12, message = &quot;密码长度不对&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String password;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用自定义校验注解-&gt;校验时间</span></span><br><span class="line"><span class="meta">@Past(message = &quot;生日只能为以前的时间&quot;)</span></span><br><span class="line"><span class="meta">@JsonFormat(pattern = &quot;yyyy-MM-dd HH:mm&quot;)</span></span><br><span class="line"><span class="keyword">private</span> Date birth;</span><br><span class="line"></span><br><span class="line"><span class="comment">//校验Email</span></span><br><span class="line"><span class="meta">@Email(message = &quot;邮件地址不正确&quot;)</span></span><br><span class="line"><span class="keyword">private</span> String email;</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="校验类方法中的自定义对象"><a href="#校验类方法中的自定义对象" class="headerlink" title="校验类方法中的自定义对象"></a>校验类方法中的自定义对象</h1><ol>
+<li>在参数上加@Valid，(或者加@Validated也是可以的)</li>
+<li>在自定义对象中的属性上加上校验注解<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Valid</span> User user , BindingResult bindingResult)</span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(bindingResult.hasErrors()) &#123;</span><br><span class="line">        <span class="type">StringBuffer</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>();</span><br><span class="line">        <span class="keyword">for</span> (ObjectError objectError : bindingResult.getAllErrors()) &#123;</span><br><span class="line">            sb.append(((FieldError) objectError).getField() + <span class="string">&quot; : &quot;</span>).append(objectError.getDefaultMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(sb.toString());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Max(value = 200, message =&quot;不能超过200&quot;)</span></span><br><span class="line">        <span class="type">int</span> id;</span><br><span class="line">    </span><br><span class="line">        <span class="meta">@NotNull(message = &quot;name不能为空&quot;)</span></span><br><span class="line">        String name;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//setter  getter ....</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<hr>
+<h1 id="关于-Valid和-Validated的区别联系"><a href="#关于-Valid和-Validated的区别联系" class="headerlink" title="关于@Valid和@Validated的区别联系"></a>关于@Valid和@Validated的区别联系</h1><p>一直对@Valid和@Validated这两个注解非常疑惑，不知道怎么区分和使用。</p>
+<ol>
+<li>包位置 <ul>
+<li>@Valid: javax.validation， 是javax，也是就是jsr303中定义的规范注解 </li>
+<li>@Validated: org.springframework.validation.annotation， 是spring自己封装的注解。</li>
+</ul>
+</li>
+<li>功能<ul>
+<li>@Valid就不用说了，是jsr303的规范。</li>
+<li>@Validated是@Valid的一个变种，扩展了@Valid的功能，支持group分组校验的写法。 </li>
+</ul>
+</li>
+</ol>
+<p>那么我们对于@Valid和@Validated就可以这么理解： </p>
+<ol>
+<li>能用@Valid的地方通常可以用@Validated替代。 </li>
+<li>需要使用分组校验的时候使用@Validated注解</li>
+</ol>
+<hr>
+<h1 id="分组校验"><a href="#分组校验" class="headerlink" title="分组校验"></a>分组校验</h1><p>我们有一个用户DTO,其中有id,username两个属性。当保存时，id不需要有值，由数据库自动生成，我们使用@Null注解校验。当更新时，id需要有值，根据ID去更新用户名，我们使用@NotNull注解校验。无论是保存用户还是更新用户，都需要校验用户名，我们使用@NotBlank注解校验。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SaveGroup</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UpdateGroup</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Max(value = 200, message =&quot;不能超过200&quot;)</span></span><br><span class="line">    <span class="type">int</span> id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Null(groups = &#123;SaveGroup.class&#125;, message = &quot;不需要传入用户name&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull(groups = &#123;UpdateGroup.class&#125;, message = &quot;用户name不能为空&quot;)</span></span><br><span class="line">    String name;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>定义相应类型的公开接口(SaveGroup,UpdateGroup)，给每个校验注解指定groups属性，如果不指定则默认为javax.validation.groups.Default.class。<br>我们让SaveGroup和UpdateGroup继承了Default, 那么三个接口之间的关系类似如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">save --&gt; SaveGroup |--&gt;id  @Null</span><br><span class="line">                   |--&gt;Default --&gt; username @NotBlank</span><br><span class="line"></span><br><span class="line">update--&gt; UpdateGroup |--&gt;id @NotNull</span><br><span class="line">                      |--&gt;Default --&gt; username @NotBlank</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/hello&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(<span class="meta">@RequestBody</span> <span class="meta">@Validated(value = UpdateGroup.class)</span> User user , BindingResult bindingResult)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(bindingResult.hasErrors()) &#123;</span><br><span class="line">            <span class="type">StringBuffer</span> <span class="variable">sb</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuffer</span>();</span><br><span class="line">            <span class="keyword">for</span> (ObjectError objectError : bindingResult.getAllErrors()) &#123;</span><br><span class="line">                sb.append(((FieldError) objectError).getField() + <span class="string">&quot; : &quot;</span>).append(objectError.getDefaultMessage());</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(sb.toString());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;hello&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在方法参数的对象上加@Validated属性，填写Value为对应的接口的class即可，这时候访问不同的接口就会进行不同的校验了。</p>
+<hr>
+<h1 id="自定义校验注解"><a href="#自定义校验注解" class="headerlink" title="自定义校验注解"></a>自定义校验注解</h1><p>有时候默认提供的校验注解无法满足我们的需要，我们需要自定义。例如现有校验注解不支持java8中的LocalDateTime。那么接下来我们自定义一个校验LocalDateTime的注解。该注解判断传入的时间是否是一个过去的时间。</p>
+<ol>
+<li>创建校验注解</li>
+<li>编写校验规则 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Target(&#123;ElementType.FIELD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Constraint(validatedBy = PastTimeValidate.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> PastDate &#123;</span><br><span class="line"></span><br><span class="line">    String <span class="title function_">message</span><span class="params">()</span>;</span><br><span class="line"></span><br><span class="line">    Class&lt;?&gt;[] groups() <span class="keyword">default</span> &#123; &#125;;</span><br><span class="line"></span><br><span class="line">    Class&lt;? <span class="keyword">extends</span> <span class="title class_">Payload</span>&gt;[] payload() <span class="keyword">default</span> &#123; &#125;;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+校验规则也就是枚举PastDate中指定的validateBy属性<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PastTimeValidate</span> <span class="keyword">implements</span> <span class="title class_">ConstraintValidator</span>&lt;PastDate, LocalDateTime&gt; &#123;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">initialize</span><span class="params">(PastDate constraintAnnotation)</span> &#123;</span><br><span class="line">      log.info(<span class="string">&quot;init enum PastDate&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isValid</span><span class="params">(LocalDateTime localDateTime, ConstraintValidatorContext context)</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> localDateTime.isBefore(LocalDateTime.now()) ? <span class="literal">true</span> : <span class="literal">false</span>;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>写完这些，我们就可以像@Past对Date校验一样使用@PastDate对LocalDateTime进行校验了。</p>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = springmvccsjy id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/07/18/java8-Lamdba%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

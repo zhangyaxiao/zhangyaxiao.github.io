@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>设计模式之状态模式 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="设计模式," />
+  
+
+  <meta name="description" content="状态模式状态模式允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类 类图state是状态接口，所有的状态都实现它。Context 是一个环境角色，它的作用是串联各个状态的过渡  要点 状态模式允许一个对象基于内部状态而拥有不同的行为 状态模式用类代表状态 Context会将行为委托给当前状态对象 通过将每个状态封装进一个类，我们把以后需要做的任何改变局部化了 状态模式和策略模式有相同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之状态模式">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="状态模式状态模式允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类 类图state是状态接口，所有的状态都实现它。Context 是一个环境角色，它的作用是串联各个状态的过渡  要点 状态模式允许一个对象基于内部状态而拥有不同的行为 状态模式用类代表状态 Context会将行为委托给当前状态对象 通过将每个状态封装进一个类，我们把以后需要做的任何改变局部化了 状态模式和策略模式有相同">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态类图.gif">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态2.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态3.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态4.png">
+<meta property="article:published_time" content="2018-04-02T09:39:03.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.683Z">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态类图.gif">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-text">状态模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%9B%BE"><span class="toc-text">类图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text">要点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-text">例子</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-设计模式之状态模式" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">设计模式之状态模式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.04.02</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h1><p>状态模式允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类</p>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态类图.gif" alt="状态类图"><br>state是状态接口，所有的状态都实现它。<br>Context 是一个环境角色，它的作用是串联各个状态的过渡</p>
+<hr>
+<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><ul>
+<li>状态模式允许一个对象基于内部状态而拥有不同的行为</li>
+<li>状态模式用类代表状态</li>
+<li>Context会将行为委托给当前状态对象</li>
+<li>通过将每个状态封装进一个类，我们把以后需要做的任何改变局部化了</li>
+<li>状态模式和策略模式有相同的类图，但是他们的意图不同</li>
+<li>策略模式通常会用行为或算法来配置Context类</li>
+<li>状态模式允许Context随着状态的改变而改变行为</li>
+<li>状态转换可以由State类 或 Context类 控制</li>
+<li>使用状态模式通常会导致设计中类的数目大量增加</li>
+<li>状态类可以被多个Context实例共享。</li>
+</ul>
+<blockquote>
+<p>状态——封装基于状态的行为，并将行为委托到当前状态<br>策略——将可以互换的行为封装起来，然后使用委托的方法，决定使用哪一个行为<br>模板——由子类决定如何实现算法中的某些步骤</p>
+</blockquote>
+<hr>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>转载 <a target="_blank" rel="noopener" href="https://blog.csdn.net/u012401711/article/details/52675873">https://blog.csdn.net/u012401711/article/details/52675873</a></p>
+<p>描述：现在城市发展很快，百万级人口的城市一堆一堆的，那其中有两个东西的发明在城市的发展中起到非常重要的作用：一个是汽车，一个呢是…，猜猜看，是什么？是电梯！汽车让城市可以横向扩展，电梯让城市可以纵向延伸，向空中伸展。汽车对城市的发展我们就不说了，电梯，你想想看，如果没有电梯，每天你需要爬10 层楼梯，你是不是会崩溃掉？建筑师设计了一个没有电梯的建筑，那投资家肯定不愿意投资，那也是建筑师的耻辱呀，今天我们就用程序表现一下这个电梯是怎么运作的。  </p>
+<p>我们每天都在乘电梯，那我们来看看电梯有哪些动作（映射到Java 中就是有多少方法）:开门、关门、运行、停止，就这四个动作，好，我们就用程序来实现一下电梯的动作，先看类图设计：</p>
+<p><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态1.png" alt="状态1"><br>非常简单的类图，定义一个接口，然后是一个实现类，然后业务类Client 就可以调用，并运行起来，简单也来看看我们的程序,先看接口：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 定义一个电梯的接口 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ILift</span> &#123;  </span><br><span class="line">    <span class="comment">//首先电梯门开启动作  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯门有开启，那当然也就有关闭了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯要能上能下，跑起来  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯还要能停下来，停不下来那就扯淡了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 电梯的实现类 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lift</span> <span class="keyword">implements</span> <span class="title class_">ILift</span> &#123;  </span><br><span class="line">    <span class="comment">//电梯门关闭  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门关闭...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门开启  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门开启...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯开始跑起来  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯上下跑起来...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯停止  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯停止了...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>电梯的开、关、跑、停都实现了，开看业务是怎么调用的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 模拟电梯的动作 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="type">ILift</span> <span class="variable">lift</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Lift</span>();  </span><br><span class="line">        <span class="comment">//首先是电梯门开启，人进去  </span></span><br><span class="line">        lift.open();  </span><br><span class="line">        <span class="comment">//然后电梯门关闭  </span></span><br><span class="line">        lift.close();  </span><br><span class="line">        <span class="comment">//再然后，电梯跑起来，向上或者向下  </span></span><br><span class="line">        lift.run();  </span><br><span class="line">        <span class="comment">//最后到达目的地，电梯挺下来  </span></span><br><span class="line">        lift.stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>运行的结果如下：</p>
+<blockquote>
+<p>电梯门开启…<br>电梯门关闭…<br>电梯上下跑起来…<br>电梯停止了…</p>
+</blockquote>
+<p>太简单的程序了，是个程序员都会写这个程序，这么简单的程序还拿出来show，是不是太小看我们的智商了？！非也，非也，我们继续往下分析，这个程序有什么问题，你想呀电梯门可以打开，但不是随时都可以开，是有前提条件的的，你不可能电梯在运行的时候突然开门吧？！电梯也不会出现停止了但是不开门的情况吧？！那要是有也是事故嘛，再仔细想想，电梯的这四个动作的执行都是有前置条件，具体点说说在特定状态下才能做特定事，那我们来分析一下电梯有什么那些特定状态：<br>门敞状态—按了电梯上下按钮，电梯门开，这中间有5 秒的时间（当然你也可以用身体挡住电梯门，那就不是5 秒了），那就是门敞状态；在这个状态下电梯只能做的动作是关门动作，做别的动作？那就危险喽<br>门闭状态—电梯门关闭了，在这个状态下，可以进行的动作是：开门（我不想坐电梯了）、停止（忘记按路层号了）、运行<br>运行状态—电梯正在跑，上下窜，在这个状态下，电梯只能做的是停止；<br>停止状态—电梯停止不动，在这个状态下，电梯有两个可选动作：继续运行和开门动作；<br>我们用一张表来表示电梯状态和动作之间的关系：<br><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态2.png" alt="状态2"><br>电梯状态和动作对应表（○表示不允许，☆表示允许动作）<br>看到这张表后，我们才发觉，哦~~，我们的程序做的很不严谨，好，我们来修改一下，先看类图：<br><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态3.png" alt="状态3"><br>在接口中定义了四个常量，分别表示电梯的四个状态：门敞状态、关闭状态、运行状态、停止状态，然后在实现类中电梯的每一次动作发生都要对状态进行判断，判断是否运行执行，也就是动作的执行是否符合业务逻辑，实现类中的四个私有方法是仅仅实现电梯的动作，没有任何的前置条件，因此这四个方法是不能为外部类调用的，设置为私有方法。我们先看接口的改变：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 定义一个电梯的接口 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">ILift</span> &#123;  </span><br><span class="line">    <span class="comment">//电梯的四个状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">OPENING_STATE</span> <span class="operator">=</span> <span class="number">1</span>; <span class="comment">//门敞状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">CLOSING_STATE</span> <span class="operator">=</span> <span class="number">2</span>; <span class="comment">//门闭状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">RUNNING_STATE</span> <span class="operator">=</span> <span class="number">3</span>; <span class="comment">//运行状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">int</span> <span class="variable">STOPPING_STATE</span> <span class="operator">=</span> <span class="number">4</span>; <span class="comment">//停止状态；  </span></span><br><span class="line">    <span class="comment">//设置电梯的状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setState</span><span class="params">(<span class="type">int</span> state)</span>;  </span><br><span class="line">    <span class="comment">//首先电梯门开启动作  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯门有开启，那当然也就有关闭了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯要能上能下，跑起来  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯还要能停下来，停不下来那就扯淡了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>增加了四个静态常量，增加了一个方法setState，设置电梯的状态。我们再来看实现类是如何实现的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 电梯的实现类 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Lift</span> <span class="keyword">implements</span> <span class="title class_">ILift</span> &#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> state;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setState</span><span class="params">(<span class="type">int</span> state)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.state = state;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门关闭  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//电梯在什么状态下才能关闭  </span></span><br><span class="line">        <span class="keyword">switch</span>(<span class="built_in">this</span>.state)&#123;  </span><br><span class="line">            <span class="keyword">case</span> OPENING_STATE: <span class="comment">//如果是则可以关门，同时修改电梯状态  </span></span><br><span class="line">            <span class="built_in">this</span>.closeWithoutLogic();  </span><br><span class="line">            <span class="built_in">this</span>.setState(CLOSING_STATE);  </span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> CLOSING_STATE: <span class="comment">//如果电梯就是关门状态，则什么都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> RUNNING_STATE: <span class="comment">//如果是正在运行，门本来就是关闭的，也说明都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> STOPPING_STATE: <span class="comment">//如果是停止状态，本也是关闭的，什么也不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门开启  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//电梯在什么状态才能开启  </span></span><br><span class="line">        <span class="keyword">switch</span>(<span class="built_in">this</span>.state)&#123;  </span><br><span class="line">            <span class="keyword">case</span> OPENING_STATE: <span class="comment">//如果已经在门敞状态，则什么都不做  </span></span><br><span class="line">           <span class="comment">//do nothing;  </span></span><br><span class="line">           <span class="keyword">break</span>;  </span><br><span class="line">           <span class="keyword">case</span> CLOSING_STATE: <span class="comment">//如是电梯时关闭状态，则可以开启  </span></span><br><span class="line">           <span class="built_in">this</span>.openWithoutLogic();  </span><br><span class="line">           <span class="built_in">this</span>.setState(OPENING_STATE);  </span><br><span class="line">           <span class="keyword">break</span>;  </span><br><span class="line">           <span class="keyword">case</span> RUNNING_STATE: <span class="comment">//正在运行状态，则不能开门，什么都不做  </span></span><br><span class="line">           <span class="comment">//do nothing;  </span></span><br><span class="line">           <span class="keyword">break</span>;  </span><br><span class="line">           <span class="keyword">case</span> STOPPING_STATE: <span class="comment">//停止状态，淡然要开门了  </span></span><br><span class="line">           <span class="built_in">this</span>.openWithoutLogic();  </span><br><span class="line">           <span class="built_in">this</span>.setState(OPENING_STATE);  </span><br><span class="line">           <span class="keyword">break</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯开始跑起来  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">switch</span>(<span class="built_in">this</span>.state)&#123;  </span><br><span class="line">            <span class="keyword">case</span> OPENING_STATE: <span class="comment">//如果已经在门敞状态，则不你能运行，什么都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> CLOSING_STATE: <span class="comment">//如是电梯时关闭状态，则可以运行  </span></span><br><span class="line">            <span class="built_in">this</span>.runWithoutLogic();  </span><br><span class="line">            <span class="built_in">this</span>.setState(RUNNING_STATE);  </span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> RUNNING_STATE: <span class="comment">//正在运行状态，则什么都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> STOPPING_STATE: <span class="comment">//停止状态，可以运行  </span></span><br><span class="line">            <span class="built_in">this</span>.runWithoutLogic();  </span><br><span class="line">            <span class="built_in">this</span>.setState(RUNNING_STATE);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯停止  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">switch</span>(<span class="built_in">this</span>.state)&#123;  </span><br><span class="line">            <span class="keyword">case</span> OPENING_STATE: <span class="comment">//如果已经在门敞状态，那肯定要先停下来的，什么都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> CLOSING_STATE: <span class="comment">//如是电梯时关闭状态，则当然可以停止了  </span></span><br><span class="line">            <span class="built_in">this</span>.stopWithoutLogic();  </span><br><span class="line">            <span class="built_in">this</span>.setState(CLOSING_STATE);  </span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> RUNNING_STATE: <span class="comment">//正在运行状态，有运行当然那也就有停止了  </span></span><br><span class="line">            <span class="built_in">this</span>.stopWithoutLogic();  </span><br><span class="line">            <span class="built_in">this</span>.setState(CLOSING_STATE);  </span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">            <span class="keyword">case</span> STOPPING_STATE: <span class="comment">//停止状态，什么都不做  </span></span><br><span class="line">            <span class="comment">//do nothing;  </span></span><br><span class="line">            <span class="keyword">break</span>;  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//纯粹的电梯关门，不考虑实际的逻辑  </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">closeWithoutLogic</span><span class="params">()</span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门关闭...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//纯粹的店门开，不考虑任何条件  </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">openWithoutLogic</span><span class="params">()</span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门开启...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//纯粹的运行，不考虑其他条件  </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">runWithoutLogic</span><span class="params">()</span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯上下跑起来...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//单纯的停止，不考虑其他条件  </span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">stopWithoutLogic</span><span class="params">()</span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯停止了...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>程序有点长，但是还是很简单的，就是在每一个接口定义的方法中使用witch…case 来进行判断，是否运行运行指定的动作。我们来Client 程序的变更：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 模拟电梯的动作 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="type">ILift</span> <span class="variable">lift</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Lift</span>();  </span><br><span class="line">        <span class="comment">//电梯的初始条件应该是停止状态  </span></span><br><span class="line">        lift.setState(ILift.STOPPING_STATE);  </span><br><span class="line">        <span class="comment">//首先是电梯门开启，人进去  </span></span><br><span class="line">        lift.open();  </span><br><span class="line">        <span class="comment">//然后电梯门关闭  </span></span><br><span class="line">        lift.close();  </span><br><span class="line">        <span class="comment">//再然后，电梯跑起来，向上或者向下  </span></span><br><span class="line">        lift.run();  </span><br><span class="line">        <span class="comment">//最后到达目的地，电梯挺下来  </span></span><br><span class="line">        lift.stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>业务调用的方法中增加了电梯状态判断，电梯要开门不是随时都可以开的，必须满足了一定条件你才能开门，人才能走进去，我们设置电梯的起始是停止状态，看运行结果：</p>
+<blockquote>
+<p>电梯门开启…<br>电梯门关闭…<br>电梯上下跑起来…<br>电梯停止了…</p>
+</blockquote>
+<p>我们来想一下，这段程序有什么问题，首先Lift.java 这个文件有点长，长的原因是我们在程序中使用了大量的switch…case 这样的判断（if…else 也是一样），程序中只要你有这样的判断就避免不了加长程序，同步的在业务比较复杂的情况下，程序体会更长，这个就不是一个很好的习惯了，较长的方法或者类的维护性比较差，毕竟程序是给人来阅读的；其次，扩展性非常的不好，大家来想想，电梯还有两个状态没有加，是什么？通电状态和断电状态，你要是在程序再增加这两个方法，你看看Open()、Close()、Run()、Stop()这四个方法都要增加判断条件，也就是说switch 判断体中还要增加case 项，也就说与开闭原则相违背了；再其次，我们来思考我们的业务，电梯在门敞开状态下就不能上下跑了吗？电梯有没有发生过只有运行没有停止状态呢（从40 层直接坠到1 层嘛）？电梯故障嘛，还有电梯在检修的时候，可以在stop状态下不开门，这也是正常的业务需求呀，你想想看，如果加上这些判断条件，上面的程序有多少需要修改？虽然这些都是电梯的业务逻辑，但是一个类有且仅有一个原因引起类的变化，单一职责原则，看看我们的类，业务上的任务一个小小增加或改动都对我们的这个电梯类产生了修改，这是在项目开发上是有很大风险的。既然我们已经发现程序上有以上问题，我们怎么来修改呢？<br>刚刚我们是从电梯的有哪些方法以及这些方法执行的条件去分析，现在我们换个角度来看问题，我们来想电梯在具有这些状态的时候，能够做什么事情，也就是说在电梯处于一个具体状态时，我们来思考这个状态是由什么动作触发而产生以及在这个状态下电梯还能做什么事情，举个例子来说，电梯在停止状态时，我们来思考两个问题：  </p>
+<ol>
+<li>这个停止状态时怎么来的，那当然是由于电梯执行了stop 方法而来的；</li>
+<li>第二、在停止状态下，电梯还能做什么动作?继续运行？开门？那当然都可以了。</li>
+</ol>
+<p>我们再来分析其他三个状态，也都是一样的结果，我们只要实现电梯在一个状态下的两个任务模型就可以了：这个状态是如何产生的以及在这个状态下还能做什么其他动作（也就是这个状态怎么过渡到其他状态），既然我们以状态为参考模型，那我们就先定义电梯的状态接口，思考过后我们来看类图：<br><img src="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F/状态4.png" alt="状态4"></p>
+<p>在类图中，定义了一个LiftState 抽象类，声明了一个受保护的类型Context 变量，这个是串联我们各个状态的封装类，封装的目的很明显，就是电梯对象内部状态的变化不被调用类知晓，也就是迪米特法则了，我的类内部情节你知道越少越好，并且还定义了四个具体的实现类，承担的是状态的产生以及状态间的转换过渡，我们先来看LiftState 程序:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 定义一个电梯的接口 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">LiftState</span>&#123;  </span><br><span class="line">    <span class="comment">//定义一个环境角色，也就是封装状态的变换引起的功能变化  </span></span><br><span class="line">    <span class="keyword">protected</span> Context context;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setContext</span><span class="params">(Context _context)</span>&#123;  </span><br><span class="line">        <span class="built_in">this</span>.context = _context;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//首先电梯门开启动作  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯门有开启，那当然也就有关闭了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯要能上能下，跑起来  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span>;  </span><br><span class="line">    <span class="comment">//电梯还要能停下来，停不下来那就扯淡了  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>抽象类比较简单，我们来先看一个具体的实现，门敞状态的实现类：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> cbf4Life cbf4life@126.com </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 在电梯门开启的状态下能做什么事情 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OpenningState</span> <span class="keyword">extends</span> <span class="title class_">LiftState</span> &#123;  </span><br><span class="line">    <span class="comment">//开启当然可以关闭了，我就想测试一下电梯门开关功能  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//状态修改  </span></span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.closeingState);  </span><br><span class="line">        <span class="comment">//动作委托为CloseState来执行  </span></span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().close();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//打开电梯门  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门开启...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//门开着电梯就想跑，这电梯，吓死你！  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//do nothing;  </span></span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//开门还不停止？  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//do nothing;  </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StoppingState</span> <span class="keyword">extends</span> <span class="title class_">LiftState</span> &#123;  </span><br><span class="line">    <span class="comment">//停止状态关门？电梯门本来就是关着的！  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//do nothing;  </span></span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//停止状态，开门，那是要的！  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.openningState);  </span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().open();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//停止状态再跑起来，正常的很  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.runningState);  </span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().run();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//停止状态是怎么发生的呢？当然是停止方法执行了  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯停止了...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunningState</span> <span class="keyword">extends</span> <span class="title class_">LiftState</span> &#123;  </span><br><span class="line">    <span class="comment">//电梯门关闭？这是肯定了  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//do nothing  </span></span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//运行的时候开电梯门？你疯了！电梯不会给你开的  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="comment">//do nothing  </span></span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//这是在运行状态下要实现的方法  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯上下跑...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//这个事绝对是合理的，光运行不停止还有谁敢做这个电梯？！估计只有上帝了  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.stoppingState); <span class="comment">//环境设置为停止状态；  </span></span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClosingState</span> <span class="keyword">extends</span> <span class="title class_">LiftState</span> &#123;  </span><br><span class="line">    <span class="comment">//电梯门关闭，这是关闭状态要实现的动作  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;电梯门关闭...&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门关了再打开，逗你玩呢，那这个允许呀  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.openningState); <span class="comment">//置为门敞状态  </span></span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().open();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门关了就跑，这是再正常不过了  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.runningState); <span class="comment">//设置为运行状态；  </span></span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().run();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="comment">//电梯门关着，我就不按楼层  </span></span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="built_in">super</span>.context.setLiftState(Context.stoppingState); <span class="comment">//设置为停止状态；  </span></span><br><span class="line">        <span class="built_in">super</span>.context.getLiftState().stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>我们再看看Context 类就可能好理解一点：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Context</span> &#123;  </span><br><span class="line">    <span class="comment">//定义出所有的电梯状态  </span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">OpenningState</span> <span class="variable">openningState</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OpenningState</span>();  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">ClosingState</span> <span class="variable">closeingState</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClosingState</span>();  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">RunningState</span> <span class="variable">runningState</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RunningState</span>();  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">StoppingState</span> <span class="variable">stoppingState</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StoppingState</span>();  </span><br><span class="line">    <span class="comment">//定一个当前电梯状态  </span></span><br><span class="line">    <span class="keyword">private</span> LiftState liftState;  </span><br><span class="line">    <span class="keyword">public</span> LiftState <span class="title function_">getLiftState</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> liftState;  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setLiftState</span><span class="params">(LiftState liftState)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.liftState = liftState;  </span><br><span class="line">        <span class="comment">//把当前的环境通知到各个实现类中  </span></span><br><span class="line">        <span class="built_in">this</span>.liftState.setContext(<span class="built_in">this</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>&#123;  </span><br><span class="line">        <span class="built_in">this</span>.liftState.open();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span>&#123;  </span><br><span class="line">        <span class="built_in">this</span>.liftState.close();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span>&#123;  </span><br><span class="line">        <span class="built_in">this</span>.liftState.run();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">stop</span><span class="params">()</span>&#123;  </span><br><span class="line">        <span class="built_in">this</span>.liftState.stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>结合以上三个类，我们可以这样理解，Context 是一个环境角色，它的作用是串联各个状态的过渡，在LiftSate 抽象类中我们定义了并把这个环境角色聚合进来，并传递到了子类，也就是四个具体的实现类中自己根据环境来决定如何进行状态的过渡。</p>
+<p>业务逻辑都已经实现了，我们来测试下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">* <span class="doctag">@author</span> gumx </span></span><br><span class="line"><span class="comment">* I&#x27;m glad to share my knowledge with you all. </span></span><br><span class="line"><span class="comment">* 模拟电梯的动作 </span></span><br><span class="line"><span class="comment">*/</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Client</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">        <span class="type">Context</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Context</span>();  </span><br><span class="line">        context.setLiftState(<span class="keyword">new</span> <span class="title class_">ClosingState</span>());  </span><br><span class="line">        context.open();  </span><br><span class="line">        context.close();  </span><br><span class="line">        context.run();  </span><br><span class="line">        context.stop();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure><br>看运行结果：</p>
+<blockquote>
+<p>电梯门开启…<br>电梯门关闭…<br>电梯上下跑起来…<br>电梯停止了…</p>
+</blockquote>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = mbms id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%BF%AD%E4%BB%A3%E5%99%A8%E5%92%8C%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/04/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

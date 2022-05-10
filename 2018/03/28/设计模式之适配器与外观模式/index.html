@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>设计模式之适配器与外观模式 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="设计模式," />
+  
+
+  <meta name="description" content="适配器模式将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间 类图 用户一直在使用 Target.request() 接口，而对应的业务是通过Adaptee.specificRequest()来完成。适配器 Adapter 实现了Target.request() 接口。同时引用了 Adaptee。来完成适配或者 Adapter 可以通过 继承或者实现 Adaptee">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之适配器与外观模式">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="适配器模式将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间 类图 用户一直在使用 Target.request() 接口，而对应的业务是通过Adaptee.specificRequest()来完成。适配器 Adapter 实现了Target.request() 接口。同时引用了 Adaptee。来完成适配或者 Adapter 可以通过 继承或者实现 Adaptee">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/适配器类图.gif">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/外观类图.gif">
+<meta property="article:published_time" content="2018-03-28T08:04:46.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.705Z">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/适配器类图.gif">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-text">适配器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%9B%BE"><span class="toc-text">类图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-text">外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%9B%BE-1"><span class="toc-text">类图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text">要点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E4%BE%8B%E5%AD%90"><span class="toc-text">适配器例子</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E8%A7%82%E4%BE%8B%E5%AD%90"><span class="toc-text">外观例子</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-设计模式之适配器与外观模式" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">设计模式之适配器与外观模式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.03.28</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h1><p>将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间</p>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p><img src="/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/适配器类图.gif" alt="适配器类图"></p>
+<p>用户一直在使用 Target.request() 接口，而对应的业务是通过Adaptee.specificRequest()来完成。<br>适配器 Adapter 实现了Target.request() 接口。<br>同时引用了 Adaptee。来完成适配<br>或者 Adapter 可以通过 继承或者实现 Adaptee 接口，来完成适配  </p>
+<hr>
+<h1 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h1><p>提供一个统一的接口，用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用</p>
+<h2 id="类图-1"><a href="#类图-1" class="headerlink" title="类图"></a>类图</h2><p><img src="/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E9%80%82%E9%85%8D%E5%99%A8%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F/外观类图.gif" alt="外观类图"></p>
+<hr>
+<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><ul>
+<li>当需要使用一个现有的类而其接口并不符合你的需要时，就使用适配器</li>
+<li>当需要简化并统一一个很大的接口或者一群复杂的接口时，使用外观</li>
+<li>适配器改变接口以符合客户的期望</li>
+<li>外观将客户从一个复杂的子系统中解耦</li>
+<li>适配器将一个对象包装起来以改变其接口，装饰着将一个对象包装起来以增加新的行为和责任，而外观将一群对象包装起来以简化其接口</li>
+</ul>
+<blockquote>
+<p>装饰者模式——不改变接口，但加入责任<br>适配器模式——将一个接口转成另一个接口<br>外观模式——让接口更简单  </p>
+</blockquote>
+<hr>
+<h2 id="适配器例子"><a href="#适配器例子" class="headerlink" title="适配器例子"></a>适配器例子</h2><p>Java的老一辈开发者应该比较熟悉Vector,Stack,Hashtable等集合类。它们的elements()返回一个实现了Enumeration接口的实现类。<br>但是自从出现Iterator以后，就很少再使用Enumeration了。<br>Iterator接口声明了三个方法: hasNext(),next(),remove()方法。<br>而Enumeration只声明了hasMoreElements()和nextElement()方法。分别对应于Iterator的hasNext和next方法。  </p>
+<p>假设现在客户端的代码只接受接口为Iterator的实现集合。但是现在我们已经拥有了Enumeration集合类。所以这个时候，我们可以使用适配器模式来解决接口不兼容的问题。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* </span></span><br><span class="line"><span class="comment"> * 一个简单的适配器模式例子 </span></span><br><span class="line"><span class="comment"> *  </span></span><br><span class="line"><span class="comment"> * 具体角色: </span></span><br><span class="line"><span class="comment"> * Target  - Iterator </span></span><br><span class="line"><span class="comment"> * Adaptor - EnumerationIterator </span></span><br><span class="line"><span class="comment"> * Adaptee - Enumeration </span></span><br><span class="line"><span class="comment"> * client  - print method  </span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"><span class="keyword">package</span> pattern.adapter;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> java.util.Arrays;  </span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;  </span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;  </span><br><span class="line"><span class="keyword">import</span> java.util.Vector;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * 把Enumeration接口转换成Iterator接口的适配器  </span></span><br><span class="line"><span class="comment"> * 适配器模式中的角色 - adaptor </span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">EnumerationIterator</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">Iterator</span>&lt;E&gt; &#123;  </span><br><span class="line">      </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 被适配的接口 </span></span><br><span class="line"><span class="comment">     * 适配器模式中的角色 - adaptee  </span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="keyword">private</span> Enumeration&lt;E&gt; enums;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">EnumerationIterator</span><span class="params">(Enumeration&lt;E&gt; enums)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.enums = enums;  </span><br><span class="line">    &#125;  </span><br><span class="line">      </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> enums.hasMoreElements();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> E <span class="title function_">next</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> enums.nextElement();  </span><br><span class="line">    &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 因为Enumeration接口不支持remove操作，所以这里简单地抛出异常 </span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="meta">@Override</span>  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure><br>使用<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;  </span><br><span class="line">          </span><br><span class="line">        Vector&lt;String&gt; students = <span class="keyword">new</span> <span class="title class_">Vector</span>&lt;String&gt;(Arrays.asList(<span class="string">&quot;Benson&quot;</span>,<span class="string">&quot;Steven Jobs&quot;</span>,<span class="string">&quot;Bill Gates&quot;</span>,<span class="string">&quot;James Gosling&quot;</span>,<span class="string">&quot;Doug Lea&quot;</span>));  </span><br><span class="line">        Enumeration&lt;String&gt; enums = students.elements();  <span class="comment">// 接口为Enumeration，与客户端的Iterator不兼容。  </span></span><br><span class="line">        </span><br><span class="line">        print(<span class="keyword">new</span> <span class="title class_">EnumerationIterator</span>&lt;String&gt;(enums)); <span class="comment">// EnumerationIterator为适配器，将不兼容的Enumeration转换成客户端需要的Iterator接口  </span></span><br><span class="line">    &#125;  </span><br><span class="line">      </span><br><span class="line">    <span class="comment">/** </span></span><br><span class="line"><span class="comment">     * 客户端只接受Iterator接口的实现类 </span></span><br><span class="line"><span class="comment">     * 适配器模式中的角色 - Client </span></span><br><span class="line"><span class="comment">     */</span>  </span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">(Iterator&lt;String&gt; iterator)</span> &#123;  </span><br><span class="line">        <span class="keyword">while</span>(iterator.hasNext()) &#123;  </span><br><span class="line">            System.out.println(iterator.next());  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="外观例子"><a href="#外观例子" class="headerlink" title="外观例子"></a>外观例子</h2><p><strong>设计原则：最少知识原则，只和你的密友谈话</strong></p>
+<p>一个具体的例子。DrawerFacade直接封装好了所有的动作。DrawerClient和抽屉解耦，新增或调整抽屉不需要修改DrawerClient。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> facade;  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DrawerOne</span> &#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">&quot;第一个抽屉被打开了&quot;</span>);  </span><br><span class="line">       getKey();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getKey</span><span class="params">()</span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">&quot;得到第二个抽屉的钥匙&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DrawerTwo</span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">&quot;第二个抽屉被打开了&quot;</span>);  </span><br><span class="line">       getFile();  </span><br><span class="line">    &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getFile</span><span class="params">()</span>&#123;  </span><br><span class="line">       System.out.println(<span class="string">&quot;得到这个重要文件&quot;</span>);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">DrawerFacade</span>&#123;  </span><br><span class="line">    DrawerOne darwerOne=<span class="keyword">new</span> <span class="title class_">DrawerOne</span>();  </span><br><span class="line">    DrawerTwo darwerTwo=<span class="keyword">new</span> <span class="title class_">DrawerTwo</span>();  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">()</span>&#123;  </span><br><span class="line">       darwerOne.open();  </span><br><span class="line">       darwerTwo.open();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DrawerClient</span>&#123;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String []args)</span>&#123;  </span><br><span class="line">       DrawerFacade drawer=<span class="keyword">new</span> <span class="title class_">DrawerFacade</span>();  </span><br><span class="line">       drawer.open();  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = spqhwg id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/03/28/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/03/29/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

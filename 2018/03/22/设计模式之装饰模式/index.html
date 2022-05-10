@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>设计模式之装饰模式 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="设计模式," />
+  
+
+  <meta name="description" content="装饰模式装饰模式动态的将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。 类图Component 是抽象类，所有的被装饰对象都继承它ConcreteComponent 是被装饰对象Decorator 继承Component，所有装饰类都继承它ConcreteDecoratorA，ConcreteDecoratorB是装饰类    要点 继承属于扩展形式之一，但不见得是达到弹性设计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式之装饰模式">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="装饰模式装饰模式动态的将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。 类图Component 是抽象类，所有的被装饰对象都继承它ConcreteComponent 是被装饰对象Decorator 继承Component，所有装饰类都继承它ConcreteDecoratorA，ConcreteDecoratorB是装饰类    要点 继承属于扩展形式之一，但不见得是达到弹性设计">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰类图.gif">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰2.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰3.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰4.png">
+<meta property="article:published_time" content="2018-03-22T02:44:06.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.693Z">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰类图.gif">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F"><span class="toc-text">装饰模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B1%BB%E5%9B%BE"><span class="toc-text">类图</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A6%81%E7%82%B9"><span class="toc-text">要点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-text">例子</span></a></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-设计模式之装饰模式" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">设计模式之装饰模式</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.03.22</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="装饰模式"><a href="#装饰模式" class="headerlink" title="装饰模式"></a>装饰模式</h1><p>装饰模式动态的将责任附加到对象上。想要扩展功能，装饰者提供有别于继承的另一种选择。</p>
+<h2 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h2><p><img src="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰类图.gif" alt="装饰类图"><br>Component 是抽象类，所有的被装饰对象都继承它<br>ConcreteComponent 是被装饰对象<br>Decorator 继承Component，所有装饰类都继承它<br>ConcreteDecoratorA，ConcreteDecoratorB是装饰类  </p>
+<hr>
+<h1 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h1><ul>
+<li>继承属于扩展形式之一，但不见得是达到弹性设计的最佳方案</li>
+<li>在我们的设计中，应该允许行为可以被扩展，而无需修改现有的代码</li>
+<li>组合和委托可用于在运行时动态的加上新的行为</li>
+<li>除了继承，装饰模式也可以让我们扩展行为</li>
+<li>装饰者模式意味着一群装饰者类，这些类用来包装具体组件</li>
+<li>装饰者类反映出被装饰的组件类型（事实上，他们具有相同的类型，都经过接口或继承实现）</li>
+<li>装饰者可以在被装饰者的行为前面 与/或 后面加上自己的行为，甚至将被装饰者的行为整个取代掉，而达到特定的目的</li>
+<li>你可以用无数个装饰者包装一个组件</li>
+<li>装饰者一般对组件的客户是透明的，除非客户程序依赖于组件的具体类型</li>
+<li>装饰者会导致设计中出现许多小对象，如果过度使用，会让程序变得复杂</li>
+</ul>
+<hr>
+<h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>一个咖啡店的例子。这是一个订单系统，Beverage是饮料的抽象类，所有饮料都继承它。cost()是计算价格，子类必须实现它<br><img src="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰1.png" alt="装饰1"></p>
+<p>购买咖啡时，客户可以要求在其中加入各种调料，例如：牛奶，豆浆，巧克力，糖等。然后将不同调料和饮料组合之后<br><img src="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰2.png" alt="装饰2"><br>显然不能这么设计  </p>
+<p>如果我们之间把各种调料当做 boolean变量，放在Beverage超类中呢<br><img src="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰3.png" alt="装饰3"></p>
+<p>存在的问题：</p>
+<ul>
+<li>调料价格的改变会使我们修改现有的代码</li>
+<li>一旦出现新的调料，我们就需要加上新的变量，并改变超类中的cost()方法</li>
+<li>以后可能会有新饮料，，对于这些饮料而言，某些调料可能并不适合</li>
+<li>万一顾客想要双倍糖，怎么办。</li>
+</ul>
+<p><strong>设计原则：类应该对扩展开发，对修改关闭</strong></p>
+<p>下面我们使用装饰模式解决这个问题<br>Beverage还是饮料的抽象类，所有的饮料都继承它。增加抽象类 CondimentDecorator，所有的调料都继承它。每种调料都有一个实例变量Beverage，扩展了它的cost()方法，<br><img src="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A3%85%E9%A5%B0%E6%A8%A1%E5%BC%8F/装饰4.png" alt="装饰4"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">Beverage</span>&#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">description</span> <span class="operator">=</span> <span class="string">&quot;Unknown Beverage&quot;</span>;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> <span class="type">double</span> <span class="title function_">cost</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">CondimentDecorator</span> <span class="keyword">extends</span> <span class="title class_">Beverage</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">abstract</span> String <span class="title function_">getDescription</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>饮料<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Espresso</span> <span class="keyword">extends</span> <span class="title class_">Beverage</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Espresso</span><span class="params">()</span>&#123;</span><br><span class="line">        description = <span class="string">&quot;Espresso&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">cost</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1.99</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HouseBlend</span> <span class="keyword">extends</span> <span class="title class_">Beverage</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">HouseBlend</span><span class="params">()</span>&#123;</span><br><span class="line">        description = <span class="string">&quot;HouseBlend&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">cost</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.98</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>调料<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Mocha</span> <span class="keyword">extends</span> <span class="title class_">CondimentDecorator</span>&#123;</span><br><span class="line">    Beverage beverage;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Mocha</span><span class="params">(Beverage beverage)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.beverage = beverage;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> beverage.getDescription()+<span class="string">&quot;,Mocha&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">cost</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.20</span>+beverage.cost();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><br>测试<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">StarbuzzCoffee</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        <span class="type">Beverage</span> <span class="variable">beverage</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Espresso</span>();</span><br><span class="line">        <span class="comment">//加双倍抹茶</span></span><br><span class="line">        beverage = <span class="keyword">new</span> <span class="title class_">Mocha</span>(beverage);</span><br><span class="line">        beverage = <span class="keyword">new</span> <span class="title class_">Mocha</span>(beverage);</span><br><span class="line">        </span><br><span class="line">        System.out.println(beverage.getDescription());</span><br><span class="line">        System.out.println(<span class="string">&quot;价格=&quot;</span>+beverage.cost());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = zsms id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/03/22/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/03/27/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E4%B9%8B%E5%B7%A5%E5%8E%82%E6%A8%A1%E5%BC%8F/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

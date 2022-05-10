@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>spring自定义标签 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="spring," />
+  
+
+  <meta name="description" content="整体思路 创建一个需要扩展的组件 定义一个XSD文件，描述组件内容 创建一个java类，实现BeanDefinitionParser接口，用来解析XSD文件中的定义和组件定义 创建一个Handler类，扩展子NameSpaceHandlerSupport，目的是将组件注册到容器。 编写（添加）Spring.handlers和Spring.schemas文件。  解析流程：通过Spring.sche">
+<meta property="og:type" content="article">
+<meta property="og:title" content="spring自定义标签">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/02/02/spring%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="整体思路 创建一个需要扩展的组件 定义一个XSD文件，描述组件内容 创建一个java类，实现BeanDefinitionParser接口，用来解析XSD文件中的定义和组件定义 创建一个Handler类，扩展子NameSpaceHandlerSupport，目的是将组件注册到容器。 编写（添加）Spring.handlers和Spring.schemas文件。  解析流程：通过Spring.sche">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/02/02/spring%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/1075916-20180202134502093-432880497.png">
+<meta property="article:published_time" content="2018-02-02T09:17:14.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.652Z">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/02/02/spring%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/1075916-20180202134502093-432880497.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="toc-text">整体思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B%E7%B1%BB"><span class="toc-text">创建模型类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%9B%E5%BB%BAxsd%E6%96%87%E4%BB%B6"><span class="toc-text">创建xsd文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99spring-schemas"><span class="toc-text">编写spring.schemas</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99BeanDefinition%EF%BC%8C%E8%A7%A3%E6%9E%90xml"><span class="toc-text">编写BeanDefinition，解析xml</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99NamespaceHandlerSupport"><span class="toc-text">编写NamespaceHandlerSupport</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E5%86%99spring-handlers"><span class="toc-text">编写spring.handlers</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%EF%BC%9A%E5%88%9B%E5%BB%BAspring-xml"><span class="toc-text">测试：创建spring.xml</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E4%BB%A3%E7%A0%81"><span class="toc-text">测试代码</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-spring自定义标签" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">spring自定义标签</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.02.02</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h1><ul>
+<li>创建一个需要扩展的组件</li>
+<li>定义一个XSD文件，描述组件内容</li>
+<li>创建一个java类，实现BeanDefinitionParser接口，用来解析XSD文件中的定义和组件定义</li>
+<li>创建一个Handler类，扩展子NameSpaceHandlerSupport，目的是将组件注册到容器。</li>
+<li>编写（添加）Spring.handlers和Spring.schemas文件。</li>
+</ul>
+<p>解析流程：通过Spring.schemas找到对应的XSD文件，校验xml格式；通过Spring.handlers找到对应的NamespaceHandler类作为解析自定义标签的类，通过init方法中的参数BeanDefinition实现类，根据解析的值生成BeanDefinition,</p>
+<p>目录结构<br><img src="/2018/02/02/spring%E8%87%AA%E5%AE%9A%E4%B9%89%E6%A0%87%E7%AD%BE/1075916-20180202134502093-432880497.png" alt="xxx"></p>
+<hr>
+<h2 id="创建模型类"><a href="#创建模型类" class="headerlink" title="创建模型类"></a>创建模型类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Apple</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String appleColor;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getAppleColor</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> appleColor;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAppleColor</span><span class="params">(String appleColor)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.appleColor = appleColor;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="创建xsd文件"><a href="#创建xsd文件" class="headerlink" title="创建xsd文件"></a>创建xsd文件</h2><p>对于该类标签的定义，spring中有着相应的XSD定义文档<br><a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans">http://www.springframework.org/schema/beans</a><br>对于XSD，简单的说是xml的一个标签的定义，在这里就不对XSD过多的解释了，祥见<br><a target="_blank" rel="noopener" href="http://www.w3school.com.cn/schema/schema_example.asp">http://www.w3school.com.cn/schema/schema_example.asp</a><br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">xsd:schema</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.zyx.com/schema/apple&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">xmlns:xsd</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">xmlns:beans</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">targetNamespace</span>=<span class="string">&quot;http://www.zyx.com/schema/apple&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">elementFormDefault</span>=<span class="string">&quot;qualified&quot;</span></span></span><br><span class="line"><span class="tag">            <span class="attr">attributeFormDefault</span>=<span class="string">&quot;unqualified&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:import</span> <span class="attr">namespace</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span> <span class="attr">schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;apple&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:all</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">ref</span>=<span class="string">&quot;apple-color&quot;</span> <span class="attr">minOccurs</span>=<span class="string">&quot;1&quot;</span> <span class="attr">maxOccurs</span>=<span class="string">&quot;1&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">xsd:all</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:attribute</span> <span class="attr">name</span>=<span class="string">&quot;id&quot;</span> <span class="attr">type</span>=<span class="string">&quot;xsd:string&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:attribute</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">type</span>=<span class="string">&quot;xsd:string&quot;</span> <span class="attr">use</span>=<span class="string">&quot;required&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:element</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">xsd:element</span> <span class="attr">name</span>=<span class="string">&quot;apple-color&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">xsd:attribute</span> <span class="attr">name</span>=<span class="string">&quot;color&quot;</span> <span class="attr">type</span>=<span class="string">&quot;xsd:string&quot;</span> <span class="attr">use</span>=<span class="string">&quot;required&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">xsd:complexType</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">xsd:element</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">xsd:schema</span>&gt;</span></span><br></pre></td></tr></table></figure><br>type是用来定义该属性的格式，例如<br>xsd:string 表示是一个字符串，对格式没什么要求<br>xsd:id 表示该属性的值是一个id，有格式要求（例如不能以数字开头）。<br>xsd:IDREF 表示该属性的值与某xsd:id属性的值对应<br>其他还有很多，例如number，double，datetime等等。  </p>
+<hr>
+<h2 id="编写spring-schemas"><a href="#编写spring-schemas" class="headerlink" title="编写spring.schemas"></a>编写spring.schemas</h2><p>改配置文件主要是用一个url来映射我们第一步配置好的文件，形式如下<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\:<span class="comment">//www.zyx.com/schema/apple.xsd=META-INF/namespace/apple.xsd</span></span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="编写BeanDefinition，解析xml"><a href="#编写BeanDefinition，解析xml" class="headerlink" title="编写BeanDefinition，解析xml"></a>编写BeanDefinition，解析xml</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppleBeanDefinitionParser</span> <span class="keyword">extends</span> <span class="title class_">AbstractSingleBeanDefinitionParser</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> Class <span class="title function_">getBeanClass</span><span class="params">(Element element)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Apple.class;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">doParse</span><span class="params">(Element element, BeanDefinitionBuilder bean)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> element.getAttribute(<span class="string">&quot;name&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">color</span> <span class="operator">=</span> parseAppleColor(element);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasText(name)) &#123;</span><br><span class="line">            bean.addPropertyValue(<span class="string">&quot;name&quot;</span>, name);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (StringUtils.hasText(color)) &#123;</span><br><span class="line">            bean.addPropertyValue(<span class="string">&quot;appleColor&quot;</span>, color);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String <span class="title function_">parseAppleColor</span><span class="params">(Element element)</span> &#123;</span><br><span class="line">        <span class="type">Element</span> <span class="variable">colorElement</span> <span class="operator">=</span> DomUtils.getChildElementByTagName(element, <span class="string">&quot;apple-color&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> colorElement.getAttribute(<span class="string">&quot;color&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="编写NamespaceHandlerSupport"><a href="#编写NamespaceHandlerSupport" class="headerlink" title="编写NamespaceHandlerSupport"></a>编写NamespaceHandlerSupport</h2><p>我们配置了com.zyx.demo.springNamespace.AppleNamespaceHandler类作为解析自定义标签的类，所以namespace为apple的标签，都会用这里注册的标签解析器来解析<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppleNamespaceHandler</span> <span class="keyword">extends</span> <span class="title class_">NamespaceHandlerSupport</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;</span><br><span class="line">        registerBeanDefinitionParser(<span class="string">&quot;apple&quot;</span>,<span class="keyword">new</span> <span class="title class_">AppleBeanDefinitionParser</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="编写spring-handlers"><a href="#编写spring-handlers" class="headerlink" title="编写spring.handlers"></a>编写spring.handlers</h2><p>这个配置文件用来配置解析我们apple标签,然后生成一些BeanDefinition进行注册<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">http\:<span class="comment">//www.zyx.com/schema/apple=com.zyx.demo.springNamespace.AppleNamespaceHandler</span></span><br></pre></td></tr></table></figure><br>到这里就写完了，下面是测试</p>
+<hr>
+<h2 id="测试：创建spring-xml"><a href="#测试：创建spring-xml" class="headerlink" title="测试：创建spring.xml"></a>测试：创建spring.xml</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:myname</span>=<span class="string">&quot;http://www.zyx.com/schema/apple&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;</span></span></span><br><span class="line"><span class="string"><span class="tag">     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd</span></span></span><br><span class="line"><span class="string"><span class="tag">     http://www.zyx.com/schema/apple http://www.zyx.com/schema/apple.xsd&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">default-autowire</span>=<span class="string">&quot;byName&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">myname:apple</span> <span class="attr">id</span>=<span class="string">&quot;xxx&quot;</span>  <span class="attr">name</span>=<span class="string">&quot;hongfushi&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">myname:apple-color</span> <span class="attr">color</span>=<span class="string">&quot;red&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">myname:apple-color</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">myname:apple</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="测试代码"><a href="#测试代码" class="headerlink" title="测试代码"></a>测试代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/test&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestSpringNamespace</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;spring/namespace&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">test</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="type">Apple</span> <span class="variable">apple</span> <span class="operator">=</span> SpringUtils.getBean(Apple.class);</span><br><span class="line">        System.out.println(apple.toString());</span><br><span class="line">        <span class="keyword">return</span> apple.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = springzdybq id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/01/31/Lombok%E5%BC%95%E5%85%A5%E7%AE%80%E5%8C%96Java%E4%BB%A3%E7%A0%81/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2018/02/07/%E9%87%8D%E6%9E%84%E2%80%94%E2%80%94%E6%94%B9%E5%96%84%E6%97%A2%E6%9C%89%E4%BB%A3%E7%A0%81%E7%9A%84%E8%AE%BE%E8%AE%A1/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

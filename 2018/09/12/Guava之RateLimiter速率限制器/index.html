@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-google">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>Guava之RateLimiter速率限制器 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="java," />
+  
+
+  <meta name="description" content="Guava之RateLimiter速率限制器在平时开发中，我们有时需要对某些接口的调用进行速率限制，以保护系统的稳定运行。常用的限流算法有漏桶算法和令牌桶算法，guava的RateLimiter使用的是令牌桶算法，也就是以固定的频率向桶中放入令牌，例如一秒钟10枚令牌，实际业务在每次响应请求之前都从桶中获取令牌，只有取到令牌的请求才会被成功响应，获取的方式有两种：阻塞等待令牌或者取不到立即返回失败">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Guava之RateLimiter速率限制器">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2018/09/12/Guava%E4%B9%8BRateLimiter%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6%E5%99%A8/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="Guava之RateLimiter速率限制器在平时开发中，我们有时需要对某些接口的调用进行速率限制，以保护系统的稳定运行。常用的限流算法有漏桶算法和令牌桶算法，guava的RateLimiter使用的是令牌桶算法，也就是以固定的频率向桶中放入令牌，例如一秒钟10枚令牌，实际业务在每次响应请求之前都从桶中获取令牌，只有取到令牌的请求才会被成功响应，获取的方式有两种：阻塞等待令牌或者取不到立即返回失败">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/09/12/Guava%E4%B9%8BRateLimiter%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6%E5%99%A8/令牌桶算法.jpg">
+<meta property="article:published_time" content="2018-09-12T02:19:40.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.644Z">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/09/12/Guava%E4%B9%8BRateLimiter%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6%E5%99%A8/令牌桶算法.jpg">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Guava%E4%B9%8BRateLimiter%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6%E5%99%A8"><span class="toc-text">Guava之RateLimiter速率限制器</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-RateLimiter%E6%96%B9%E6%B3%95%E6%91%98%E8%A6%81"><span class="toc-text">1. RateLimiter方法摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%AE%9E%E4%BE%8B"><span class="toc-text">2. 实例</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="google-Guava之RateLimiter速率限制器" class="article article-type-google" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">Guava之RateLimiter速率限制器</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2018.09.12</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="Guava之RateLimiter速率限制器"><a href="#Guava之RateLimiter速率限制器" class="headerlink" title="Guava之RateLimiter速率限制器"></a>Guava之RateLimiter速率限制器</h1><p>在平时开发中，我们有时需要对某些接口的调用进行速率限制，以保护系统的稳定运行。<br>常用的限流算法有漏桶算法和令牌桶算法，guava的RateLimiter使用的是令牌桶算法，也就是以固定的频率向桶中放入令牌，例如一秒钟10枚令牌，实际业务在每次响应请求之前都从桶中获取令牌，只有取到令牌的请求才会被成功响应，获取的方式有两种：阻塞等待令牌或者取不到立即返回失败</p>
+<p><img src="/2018/09/12/Guava%E4%B9%8BRateLimiter%E9%80%9F%E7%8E%87%E9%99%90%E5%88%B6%E5%99%A8/令牌桶算法.jpg" alt="令牌桶算法"></p>
+<h2 id="1-RateLimiter方法摘要"><a href="#1-RateLimiter方法摘要" class="headerlink" title="1. RateLimiter方法摘要"></a>1. RateLimiter方法摘要</h2><table>
+<thead>
+<tr>
+<th>修饰符和类型</th>
+<th>方法和描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>double</td>
+<td>acquire() 从RateLimiter获取一个许可，该方法会被阻塞直到获取到请求</td>
+</tr>
+<tr>
+<td>double</td>
+<td>acquire(int permits)从RateLimiter获取指定许可数，该方法会被阻塞直到获取到请求</td>
+</tr>
+<tr>
+<td>static RateLimiter</td>
+<td>create(double permitsPerSecond)根据指定的稳定吞吐率创建RateLimiter，这里的吞吐率是指每秒多少许可数（通常是指QPS，每秒多少查询）</td>
+</tr>
+<tr>
+<td>static RateLimiter</td>
+<td>create(double permitsPerSecond, long warmupPeriod, TimeUnit unit)根据指定的稳定吞吐率和预热期来创建RateLimiter，这里的吞吐率是指每秒多少许可数（通常是指QPS，每秒多少个请求量），在这段预热时间内，RateLimiter每秒分配的许可数会平稳地增长直到预热期结束时达到其最大速率。（只要存在足够请求数来使其饱和）</td>
+</tr>
+<tr>
+<td>double</td>
+<td>getRate()返回RateLimiter 配置中的稳定速率，该速率单位是每秒多少许可数</td>
+</tr>
+<tr>
+<td>void</td>
+<td>setRate(double permitsPerSecond)更新RateLimite的稳定速率，参数permitsPerSecond 由构造RateLimiter的工厂方法提供。</td>
+</tr>
+<tr>
+<td>String</td>
+<td>toString()返回对象的字符表现形式</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>tryAcquire()从RateLimiter 获取许可，如果该许可可以在无延迟下的情况下立即获取得到的话</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>tryAcquire(int permits)从RateLimiter 获取许可数，如果该许可数可以在无延迟下的情况下立即获取得到的话</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>tryAcquire(int permits, long timeout, TimeUnit unit)从RateLimiter 获取指定许可数如果该许可数可以在不超过timeout的时间内获取得到的话，或者如果无法在timeout 过期之前获取得到许可数的话，那么立即返回false （无需等待）</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>tryAcquire(long timeout, TimeUnit unit)从RateLimiter 获取许可如果该许可可以在不超过timeout的时间内获取得到的话，或者如果无法在timeout 过期之前获取得到许可的话，那么立即返回false（无需等待）</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-实例"><a href="#2-实例" class="headerlink" title="2. 实例"></a>2. 实例</h2><ul>
+<li><p>我们需要处理一个任务列表，但我们不希望每秒的任务提交超过两个：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//速率是每秒两个许可</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">RateLimiter</span> <span class="variable">rateLimiter</span> <span class="operator">=</span> RateLimiter.create(<span class="number">2.0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">submitTasks</span><span class="params">(List tasks, Executor executor)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (Runnable task : tasks) &#123;</span><br><span class="line">        rateLimiter.acquire(); <span class="comment">// 该方法会被阻塞直到获取到请求</span></span><br><span class="line">        executor.execute(task);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>某个Controller请求，限制每秒5个</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloController</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//每秒只发出5个令牌</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">RateLimiter</span> <span class="variable">rateLimiter</span> <span class="operator">=</span> RateLimiter.create(<span class="number">5.0</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> AccessLimitService accessLimitService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/access&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">access</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="comment">//尝试获取令牌</span></span><br><span class="line">        <span class="keyword">if</span>(rateLimiter.tryAcquire())&#123;</span><br><span class="line">            <span class="comment">//执行业务</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;aceess success [&quot;</span> + sdf.format(<span class="keyword">new</span> <span class="title class_">Date</span>()) + <span class="string">&quot;]&quot;</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//请求数超出</span></span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;aceess limit [&quot;</span> + sdf.format(<span class="keyword">new</span> <span class="title class_">Date</span>()) + <span class="string">&quot;]&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>一直被调用的接口，每30秒打印一次日志</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">RateLimiter</span> <span class="variable">rateLimiter</span> <span class="operator">=</span> RateLimiter.create(<span class="number">1.0</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">onMessage</span><span class="params">(String param)</span> &#123;</span><br><span class="line">    <span class="comment">//执行业务</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//打印日志</span></span><br><span class="line">     <span class="keyword">if</span> (logRateLimiter.tryAcquire(<span class="number">30</span>)) &#123;</span><br><span class="line">         logger.info(String.format(<span class="string">&quot;onMessage调用正常&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = guavaratelimiter id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="show pull-left" href="/2018/07/18/java8-Lamdba%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2019/07/16/Java%208%20%E4%B8%AD%E7%9A%84%20Streams%20API%20%E8%AF%A6%E8%A7%A3/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-google">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>

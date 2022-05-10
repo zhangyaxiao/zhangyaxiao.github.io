@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+
+
+  <html class="light page-post">
+
+
+<head>
+  <meta charset="utf-8">
+  
+  <title>jvm常用命令 | 张亚晓</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  
+    <meta name="keywords" content="jvm," />
+  
+
+  <meta name="description" content="jvm常用命令jps显示当前运行的java进程以及相关参数   1命令格式:jps [option] [hostid]   常用参数    参数 解释     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传给主类main()函数的参数   -l 输出主类的全类名，如果进程执行的是Jar包，输出Jar路径   -v 输出虚拟机进程启动时JVM参数     jinfo以输出并">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jvm常用命令">
+<meta property="og:url" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="张亚晓">
+<meta property="og:description" content="jvm常用命令jps显示当前运行的java进程以及相关参数   1命令格式:jps [option] [hostid]   常用参数    参数 解释     -q 只输出LVMID，省略主类的名称   -m 输出虚拟机进程启动时传给主类main()函数的参数   -l 输出主类的全类名，如果进程执行的是Jar包，输出Jar路径   -v 输出虚拟机进程启动时JVM参数     jinfo以输出并">
+<meta property="og:locale">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-2.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-3.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-4.jpg">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-1.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-2.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-3.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jstack-1.png">
+<meta property="article:published_time" content="2017-04-15T07:18:39.000Z">
+<meta property="article:modified_time" content="2022-05-10T05:51:20.648Z">
+<meta property="article:tag" content="jvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-1.png">
+
+  
+
+  
+    <link rel="icon" href="/favicon.ico">
+  
+
+  <link href="/css/styles.css?v=c114cbe6" rel="stylesheet">
+
+
+  
+    
+<link rel="stylesheet" href="/css/personal-style.css">
+
+  
+
+  
+
+  
+
+  
+
+
+  
+    <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  
+
+  
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+
+
+  
+    <span id="toolbox-mobile" class="toolbox-mobile">盒子</span>
+  
+
+  <div class="post-header CENTER">
+   
+  <div class="toolbox">
+    <a class="toolbox-entry" href="/">
+      <span class="toolbox-entry-text">盒子</span>
+      <i class="icon-angle-down"></i>
+      <i class="icon-home"></i>
+    </a>
+    <ul class="list-toolbox">
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/archives/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            笔记
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/tag/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            标签
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/project/"
+            rel="noopener noreferrer"
+            target="_blank"
+            >
+            项目
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/about/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            关于
+          </a>
+        </li>
+      
+        <li class="item-toolbox">
+          <a
+            class="CIRCLE"
+            href="/search/"
+            rel="noopener noreferrer"
+            target="_self"
+            >
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  </div>
+
+
+</div>
+
+
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">文章目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4"><span class="toc-text">jvm常用命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#jps"><span class="toc-text">jps</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jinfo"><span class="toc-text">jinfo</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstat"><span class="toc-text">jstat</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jmap"><span class="toc-text">jmap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#jstack"><span class="toc-text">jstack</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BE%8B%E5%AD%90"><span class="toc-text">例子</span></a></li></ol></li></ol>
+  </div>
+
+
+
+<div class="content content-post CENTER">
+   <article id="post-jvm常用命令" class="article article-type-post" itemprop="blogPost">
+  <header class="article-header">
+    <h1 class="post-title">jvm常用命令</h1>
+
+    <div class="article-meta">
+      <span>
+        <i class="icon-calendar"></i>
+        <span>2017.04.15</span>
+      </span>
+
+      
+
+      
+
+
+      
+
+      
+      <i class="fa fa-eye"></i> 
+        <span id="busuanzi_container_page_pv">
+           &nbsp热度 <span id="busuanzi_value_page_pv">
+           <i class="fa fa-spinner fa-spin"></i></span>℃
+        </span>
+      
+      
+    </div>
+  </header>
+
+  <div class="article-content">
+    
+      <h1 id="jvm常用命令"><a href="#jvm常用命令" class="headerlink" title="jvm常用命令"></a>jvm常用命令</h1><h2 id="jps"><a href="#jps" class="headerlink" title="jps"></a>jps</h2><p>显示当前运行的java进程以及相关参数  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">命令格式:jps [option] [hostid]  </span><br></pre></td></tr></table></figure>
+<p>常用参数</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-q</td>
+<td>只输出LVMID，省略主类的名称</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>输出虚拟机进程启动时传给主类main()函数的参数</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>输出主类的全类名，如果进程执行的是Jar包，输出Jar路径</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>输出虚拟机进程启动时JVM参数</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-1.png" alt="jvm-1"></p>
+<h2 id="jinfo"><a href="#jinfo" class="headerlink" title="jinfo"></a>jinfo</h2><p>以输出并修改运行时的java 进程的opts。用处比较简单，就是能输出并修改运行时的java进程的运行参数。用法是jinfo pid<br><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-2.png" alt="jvm-2"></p>
+<h2 id="jstat"><a href="#jstat" class="headerlink" title="jstat"></a>jstat</h2><p>是用于监控虚拟机各种运行状态信息的命令行工具。他可以显示本地或远程虚拟机进程中的类装载、内存、垃圾收集、JIT编译等运行数据。<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">jstat -&lt;option&gt; [-t] [-h&lt;lines&gt;] &lt;vmid&gt; [&lt;interval&gt; [&lt;count&gt;]]</span><br><span class="line">参数解释：</span><br><span class="line">option — 选项，我们一般使用 -gc 查看gc情况</span><br><span class="line">vmid — VM的进程号，即当前运行的java进程号</span><br><span class="line">interval– 间隔时间，单位为秒或者毫秒</span><br><span class="line">count — 打印次数，如果缺省则打印无数次</span><br><span class="line"></span><br><span class="line">例子：jstat -gc 5828 250 5</span><br></pre></td></tr></table></figure></p>
+<p>jstat有如下选项：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-gc</td>
+<td>监听Java堆状况，包括Eden区、两个Survivor区、老年代、永久代等的容量，以用空间、GC时间合计等信息</td>
+</tr>
+<tr>
+<td>-gcutil</td>
+<td>监视内容与-gc基本相同，但输出主要关注已使用空间占总空间的百分比</td>
+</tr>
+<tr>
+<td>-class</td>
+<td>监视类装载、卸载数量、总空间及类装载所耗费的时间</td>
+</tr>
+<tr>
+<td>-gccapacity</td>
+<td>监视内容与-gc基本相同，但输出主要关注java堆各个区域使用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gccause</td>
+<td>与-gcutil功能一样，但是会额外输出导致上一次GC产生的原因</td>
+</tr>
+<tr>
+<td>-gcnew</td>
+<td>监视新生代GC状况</td>
+</tr>
+<tr>
+<td>-gcnewcapacity</td>
+<td>监视内同与-gcnew基本相同，输出主要关注使用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gcold</td>
+<td>监视老年代GC情况</td>
+</tr>
+<tr>
+<td>-gcoldcapacity</td>
+<td>监视内同与-gcold基本相同，输出主要关注使用到的最大和最小空间</td>
+</tr>
+<tr>
+<td>-gcpermcapacity</td>
+<td>输出永久代使用到最大和最小空间</td>
+</tr>
+<tr>
+<td>-compiler</td>
+<td>输出JIT编译器编译过的方法、耗时等信息</td>
+</tr>
+<tr>
+<td>-printcompilation</td>
+<td>输出已经被JIT编译的方法  </td>
+</tr>
+</tbody>
+</table>
+<p>一些输出的解释</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>解释 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> S0C</td>
+<td>S0区容量（S1区相同，略） </td>
+</tr>
+<tr>
+<td> S0U</td>
+<td>S0区已使用 </td>
+</tr>
+<tr>
+<td> EC</td>
+<td>E区容量 </td>
+</tr>
+<tr>
+<td> EU</td>
+<td>E区已使用 </td>
+</tr>
+<tr>
+<td> OC</td>
+<td>老年代容量 </td>
+</tr>
+<tr>
+<td> OU</td>
+<td>老年代已使用 </td>
+</tr>
+<tr>
+<td> PC</td>
+<td>Perm容量 </td>
+</tr>
+<tr>
+<td> PU</td>
+<td>Perm区已使用 </td>
+</tr>
+<tr>
+<td> YGC</td>
+<td>Young GC（Minor GC）次数 </td>
+</tr>
+<tr>
+<td> YGCT</td>
+<td>Young GC总耗时 </td>
+</tr>
+<tr>
+<td> FGC</td>
+<td>Full GC次数 </td>
+</tr>
+<tr>
+<td> FGCT</td>
+<td>Full GC总耗时 </td>
+</tr>
+<tr>
+<td> GCT</td>
+<td>GC总耗时 </td>
+</tr>
+</tbody>
+</table>
+<p><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-3.png" alt="jvm-3"><br>JVM堆内存布局<br><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jvm-4.jpg" alt="jvm-4"></p>
+<h2 id="jmap"><a href="#jmap" class="headerlink" title="jmap"></a>jmap</h2><p> jmap用来查看堆内存使用状况。 语法格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">jmap [option] pid</span><br><span class="line">jmap -permstat pid   打印进程的类加载器和类加载器加载的持久代对象信息，输出：类加载器名称、对象是否存活（不可靠）、对象地址、父类加载器、已加载的类大小等信息</span><br><span class="line">jmap -heap pid   查看进程堆内存使用情况，包括使用的GC算法、堆配置参数和各代中堆内存使用情况</span><br><span class="line">jmap -histo[:live] pid  查看堆内存中的对象数目、大小统计直方图，如果带上live则只统计活对象</span><br><span class="line">jmap -dump:format=b,file=文件名 [pid]  导出整个JVM 中内存信息</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-1.png" alt="jmap-1"><br><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-2.png" alt="jmap-2"><br><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jmap-3.png" alt="jmap-3"></p>
+<h2 id="jstack"><a href="#jstack" class="headerlink" title="jstack"></a>jstack</h2><p>jstack主要用来查看某个Java进程内的线程堆栈信息。语法格式如下：jstack [option] pid</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-F</td>
+<td>当正常输出的请求不被响应时，强制输出线程堆栈</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>除堆栈外，显示关于锁的附加信息</td>
+</tr>
+<tr>
+<td>-m</td>
+<td>如果调用到本地方法的话，可以显示C/C++的堆栈</td>
+</tr>
+</tbody>
+</table>
+<p>jstack可以定位到线程堆栈，根据堆栈信息我们可以定位到具体代码，所以它在JVM性能调优中使用得非常多</p>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>下面我们来一个实例找出某个Java进程中最耗费CPU的Java线程并定位堆栈信息，用到的命令有ps、top、printf、jstack、grep<br>找出该进程内最耗费CPU的线程，可以使用top -Hp pid输出如下：<br><img src="/2017/04/15/jvm%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/jstack-1.png" alt="jstack-1"><br>TIME列就是各个Java线程耗费的CPU时间，CPU时间最长的是线程ID为12811的线程，用<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printf &quot;%x\n&quot; 12811</span><br></pre></td></tr></table></figure><br>得到12811的十六进制值为320b，用jstack来输出进程12811的堆栈信息，然后根据线程ID的十六进制值grep，如下：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jstack 12809 |  grep &#x27;320&#x27; -C20</span><br></pre></td></tr></table></figure></p>
+
+    
+  </div>
+
+  
+      <div class="git"></div>
+  
+
+</article>
+
+
+   
+
+
+<input value = jvmcyml id = 'comment'  type='hidden'/>
+
+
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+var comment = document.getElementById("comment");
+if(comment){
+    var gitalk = new Gitalk({
+      clientID: 'fdbd91e9e1c300d143a4',
+      clientSecret: '310883e14498deb1213e54acf0123bcb9cd87e06',
+      repo: 'zhangyaxiao.github.io',
+      owner: 'zhangyaxiao',
+      admin: ['zhangyaxiao'],
+      id: comment.value,
+      distractionFreeMode: false
+    })
+    gitalk.render('gitalk-container')
+}
+</script>
+
+   
+  <div class="box-prev-next clearfix">
+    <a class="hide pull-left" href="/">
+        <i class="icon icon-angle-left"></i>
+    </a>
+    <a class="show pull-right" href="/2017/08/01/%E6%82%B2%E8%A7%82%E9%94%81%E5%92%8C%E4%B9%90%E8%A7%82%E9%94%81/">
+        <i class="icon icon-angle-right"></i>
+    </a>
+  </div>
+
+
+
+
+</div>
+
+
+  <a id="backTop" class="back-top">
+    <i class="icon-angle-up"></i>
+  </a>
+
+
+
+
+  <div class="modal" id="modal">
+  <span id="cover" class="cover hide"></span>
+  <div id="modal-dialog" class="modal-dialog hide-dialog">
+    <div class="modal-header">
+      <span id="close" class="btn-close">关闭</span>
+    </div>
+    <hr>
+    <div class="modal-body">
+      <ul class="list-toolbox">
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/archives/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              笔记
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/tag/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              标签
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/project/"
+              rel="noopener noreferrer"
+              target="_blank"
+              >
+              项目
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/about/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              关于
+            </a>
+          </li>
+        
+          <li class="item-toolbox">
+            <a
+              class="CIRCLE"
+              href="/search/"
+              rel="noopener noreferrer"
+              target="_self"
+              >
+              搜索
+            </a>
+          </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+  
+      <div class="fexo-comments comments-post">
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+  </div>
+
+  
+
+  <script type="text/javascript">
+  function loadScript(url, callback) {
+    var script = document.createElement('script')
+    script.type = 'text/javascript';
+
+    if (script.readyState) { //IE
+      script.onreadystatechange = function() {
+        if (script.readyState == 'loaded' ||
+          script.readyState == 'complete') {
+          script.onreadystatechange = null;
+          callback();
+        }
+      };
+    } else { //Others
+      script.onload = function() {
+        callback();
+      };
+    }
+
+    script.src = url;
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+
+  window.onload = function() {
+    loadScript('/js/bundle.js?235683', function() {
+      // load success
+    });
+  }
+</script>
+
+</body>
+</html>
