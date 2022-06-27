@@ -15,33 +15,23 @@
     <meta name="keywords" content="工具," />
   
 
-  <meta name="description" content="转载 Android 使用Fiddler抓取Https请求 在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？这就是今天要说的一个抓包工具Fiddler了">
+  <meta name="description" content="1.Fiddler安装、设置 1.1 首先安装Fiddler；下载地址 https:&#x2F;&#x2F;www.telerik.com&#x2F;download&#x2F;fiddler ，安装直接默认就行，安装完后打开Fiddler。  1.2 抓包设置  Tools –&gt; Options      【HTTPS】–&gt; “Decrpt HTTPS traffic”,    Fiddler就可以截获HTTPS请求，第一">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用Fiddler在Android上抓包">
 <meta property="og:url" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/index.html">
 <meta property="og:site_name" content="张亚晓">
-<meta property="og:description" content="转载 Android 使用Fiddler抓取Https请求 在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？这就是今天要说的一个抓包工具Fiddler了">
+<meta property="og:description" content="1.Fiddler安装、设置 1.1 首先安装Fiddler；下载地址 https:&#x2F;&#x2F;www.telerik.com&#x2F;download&#x2F;fiddler ，安装直接默认就行，安装完后打开Fiddler。  1.2 抓包设置  Tools –&gt; Options      【HTTPS】–&gt; “Decrpt HTTPS traffic”,    Fiddler就可以截获HTTPS请求，第一">
 <meta property="og:locale">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/2.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/3.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/4.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/5.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/6.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/7.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/8.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/9.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/10.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/11.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/12.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/13.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/14.png">
-<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/15.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627144337.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627143654.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627144223.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627145756.png">
+<meta property="og:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信图片_20220627145631.jpg">
 <meta property="article:published_time" content="2018-04-23T02:05:58.000Z">
-<meta property="article:modified_time" content="2022-05-10T05:51:20.654Z">
+<meta property="article:modified_time" content="2022-06-27T10:10:59.179Z">
 <meta property="article:tag" content="工具">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png">
+<meta name="twitter:image" content="https://zhangyaxiao.github.io/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627144337.png">
 
   
 
@@ -155,7 +145,7 @@
 
   <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E6%8F%90"><span class="toc-text">前提</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85Fiddler"><span class="toc-text">下载安装Fiddler</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%89%8B%E6%9C%BA%E9%85%8D%E7%BD%AE"><span class="toc-text">手机配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6"><span class="toc-text">安装证书</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8B%A6%E6%88%AAhttps"><span class="toc-text">拦截https</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Inspectors"><span class="toc-text">Inspectors</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Filters"><span class="toc-text">Filters</span></a></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-Fiddler%E5%AE%89%E8%A3%85%E3%80%81%E8%AE%BE%E7%BD%AE"><span class="toc-text">1.Fiddler安装、设置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-android%E7%B3%BB%E7%BB%9F%E8%AE%BE%E7%BD%AE"><span class="toc-text">2. android系统设置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-https%E6%8A%93%E5%8C%85%EF%BC%88%E6%89%8B%E6%9C%BA%E9%9C%80%E8%A6%81ROOT%EF%BC%8C%E5%AE%89%E8%A3%85Magisk%EF%BC%89"><span class="toc-text">3. https抓包（手机需要ROOT，安装Magisk）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-%E9%80%9A%E8%BF%87FiddlerScript%E4%BF%AE%E6%94%B9%E8%AF%B7%E6%B1%82%E5%8F%82%E6%95%B0"><span class="toc-text">4. 通过FiddlerScript修改请求参数</span></a></li></ol>
   </div>
 
 
@@ -191,36 +181,115 @@
 
   <div class="article-content">
     
-      <p>转载 <a target="_blank" rel="noopener" href="https://blog.csdn.net/mackkill/article/details/70746702">Android 使用Fiddler抓取Https请求</a></p>
-<p>在开发过程中我们一定碰到过需要查看从服务器请求下来的信息是什么样的情况，一般使用log就可以查看，但是有时候当请求下来的信息特别多的时候则不怎么好看了；如果是一般的get请求，只要结合谷歌浏览器的一个数据格式化插件也可以看的很happy，但是万一是post请求呢？特别还是https类型的请求呢？<br>这就是今天要说的一个抓包工具Fiddler了，Fiddler默认是抓取http类型的接口，而想要查看https类型的接口就需要安装Fiddler证书。接下来一步步来看：</p>
-<hr>
-<h1 id="前提"><a href="#前提" class="headerlink" title="前提"></a>前提</h1><p>本文是在Windows 7 环境下进行，并且需要电脑和手机处于同一局域网。如果是台式机的朋友可以使用无线网卡；当然使用模拟器也可以。</p>
-<hr>
-<h1 id="下载安装Fiddler"><a href="#下载安装Fiddler" class="headerlink" title="下载安装Fiddler"></a>下载安装Fiddler</h1><ol>
-<li><p>首先安装Fiddler较新的版本，这里不建议安装老的版本，因为可能会出问题，下载传送门：Fiddler:<a target="_blank" rel="noopener" href="http://www.telerik.com/fiddler">http://www.telerik.com/fiddler</a></p>
+      <h1 id="1-Fiddler安装、设置"><a href="#1-Fiddler安装、设置" class="headerlink" title="1.Fiddler安装、设置"></a>1.Fiddler安装、设置</h1><ul>
+<li><p>1.1 首先安装Fiddler；下载地址 <a target="_blank" rel="noopener" href="https://www.telerik.com/download/fiddler">https://www.telerik.com/download/fiddler</a> ，安装直接默认就行，安装完后打开Fiddler。</p>
 </li>
-<li><p>安装直接默认就行，安装完后打开Fiddler，点击工具栏的Tools -&gt; Telerik Fiddler Options。选中HTTPS 勾选如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/1.png" alt="1"><br>中途会弹出安全方面的弹窗直接无视就行，毕竟我们本来干的就不是什么正常的事。</p>
+<li><p>1.2 抓包设置  Tools –&gt; Options</p>
+<ul>
+<li><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627144337.png" alt="1"></li>
+<li><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627143654.png" alt="1"></li>
+<li><p><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627144223.png" alt="1"></p>
 </li>
-<li>接着生成证书，还是HTTPS 里面如上图，点击右边的Actions选择Export Root Certificate to Desktop。意思是导出证书并存至桌面。记住位置一会会用到。如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/2.png" alt="2"></li>
-<li>切换到Connections栏，就在HTTPS旁边，勾选如图：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/3.png" alt="3"><br>这里端口号8888可以自己指定，这里我们保持默认就行。设置好后会提示重新启动Fiddler，如果没有提示我们也重新启动一下。<br>好了客户端安装完了，接下来配置手机端。</li>
-</ol>
-<hr>
-<h1 id="手机配置"><a href="#手机配置" class="headerlink" title="手机配置"></a>手机配置</h1><ol>
-<li>首先使用ipconfig /all命令获取电脑的ip地址（这里我的是172.20.1.67）：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/4.png" alt="4"></li>
-<li>然后在手机wifi高级选项里填上你的代理ip及端口8888：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/5.png" alt="5"><br>最后就是在手机端安装证书了。</li>
-</ol>
-<hr>
-<h1 id="安装证书"><a href="#安装证书" class="headerlink" title="安装证书"></a>安装证书</h1><ol>
-<li>找到先前保存至桌面的证书，然后拷贝到手机sd目录：<br>ps：这里楼主的手机电脑无法访问到sd卡很是蛋疼~~~，于是我是通过qq传送的。。。。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/6.png" alt="6"></li>
-<li>点击设置——&gt;安全——&gt;从设备存储空间安装——&gt;从sd卡中找到证书，点击安装即可（直接点击是无法安装的，不信你可以试试）。安装后会让你设置锁屏，然后取个名字就完事了。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/7.png" alt="7"><br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/8.png" alt="8"><br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/9.png" alt="9"></li>
-</ol>
-<p>好了，至此配置方面就完事了，接着就可以开心的拦截https请求了。<br><strong>ps：如果有拦截还是没有成功的情况请检查下上面的配置选项，因为楼主遇到过选项重置的情况，再就是重新安装一遍证书。</strong></p>
-<hr>
-<h1 id="拦截https"><a href="#拦截https" class="headerlink" title="拦截https"></a>拦截https</h1><p>这时候请求一条https数据，然后在Fiddler中查看信息：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/10.png" alt="10"><br>如图可以看见有A、B两个区域：<br>A区域主要是显示当前设备请求过来的链接信息：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/11.png" alt="11"><br>“#”代表的是相应的请求类型，这里在网上找了一张图，可能会有图标的变化，但大致能理解：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/12.png" alt="12"><br>在A区域选中一条请求对应B区域会显示一些我们能进行的操作，这里主要了解下Inspectors、Filters：</p>
-<h2 id="Inspectors"><a href="#Inspectors" class="headerlink" title="Inspectors"></a>Inspectors</h2><p>分为上下两个显示部分，上半部分显示的是请求头参数部分，下半部分是响应体部分。对于每一部分，提供了多种不同格式查看每个请求和响应的内容。JPG 格式使用 ImageView 就可以看到图片，使用 TextView 可以看到响应的内容。Raw标签可以查看原始的符合HTTP标准的请求和响应头。Auth则可以查看授权Proxy-Authorization 和 Authorization的相关信息。JSON能查看格式化好了的json类型数据。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/13.png" alt="13"><br>如果发现Textview显示乱码的话，切换到Transformer 取消Chunked Transfer-Encoding勾选，选择 None即可。</p>
-<p>这里还有一点：如果嫌这个界面显示不好看，Fiddler也为我们提供了简化的独立界面，在A区域中选中一条请求右键选择inspect in New Window… 即可：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/14.png" alt="14"></p>
-<h2 id="Filters"><a href="#Filters" class="headerlink" title="Filters"></a>Filters</h2><p>跟着一步步做下来的同学肯定会诧异：为啥我的A区域显示特别乱，各种乱七八糟的请求都有，而楼主的是那么的干净丝滑~~~。其实这里就是通过配置Filters的过滤规则如下图示：<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/15.png" alt="15"><br>首先选中Use Filters，Hosts里面有两个下拉选框，第一个是选择过滤内网和外网；第二个选择过滤条件，这里选择Show only the following Hosts （只显示以下允许的域名）。最后点击右侧的Actions按钮Run Filterset now 即可。</p>
-<hr>
+<li><p>【HTTPS】–&gt; “Decrpt HTTPS traffic”,    Fiddler就可以截获HTTPS请求，第一次会弹出证书安装提示，若没有弹出提示，勾选Actions-&gt; Trust Root Certificate  安装证书。</p>
+</li>
+<li>【HTTPS】–&gt;  “Ignore servercertificate errors” 勾选上 ,监听访问的 HTTPS 站点使用的可以是不可信的证书。</li>
+<li><p>【HTTPS】–&gt;   手机上设置代理后，这时候fiddler上抓到的是pc和app所有的请求，如果pc上打开网址，会很多，这时候就需要开启过滤功能了</p>
+<ul>
+<li>from all processes   抓所有的请求 </li>
+<li>from browsers only  只抓浏览器的请求 </li>
+<li>from non-browsers only  只抓非浏览器的请求 </li>
+<li>from remote clients only  只抓远程客户端请求</li>
+</ul>
+</li>
+<li><p>【Connections】–&gt; “Allow remote computers to connect” ，需要抓局域网内其他机器的包，设置允许远程连接</p>
+</li>
+<li>重启Fiddler生效。</li>
+</ul>
+</li>
+<li>1.3 注意：<ul>
+<li>Fiddler 是以代理web服务器的形式工作的，它使用默认代理地址:127.0.0.1，端口:8888，也就是说默认监听在安装本机的127.0.0.1::8888，如果需要抓局域网内其他机器的包，需要勾选上 “Allow remote computersto connect” ，允许远程设备连接，会设置监听为0.0.0.0:8888</li>
+<li>当Fiddler退出的时候它会自动注销，这样就不会影响别的 程序。不过如果Fiddler非正常退出，这时候因为Fiddler没有自动注销，会造成网页无法访问，解决的办法是重新启动下Fiddler。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2-android系统设置"><a href="#2-android系统设置" class="headerlink" title="2. android系统设置"></a>2. android系统设置</h1><ul>
+<li>2.1 查看安装Fiddler电脑的IP地址，控制台输入 ipconfig。<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信截图_20220627145756.png" alt="1"></li>
+<li>2.2 手机连接wifi，并设置代理<br><img src="/2018/04/23/%E7%94%A8Fiddler%E5%9C%A8Android%E4%B8%8A%E6%8A%93%E5%8C%85/微信图片_20220627145631.jpg" alt="1"></li>
+<li>2.3 重启app，通过fiddler可以看到app的请求</li>
+</ul>
+<h1 id="3-https抓包（手机需要ROOT，安装Magisk）"><a href="#3-https抓包（手机需要ROOT，安装Magisk）" class="headerlink" title="3. https抓包（手机需要ROOT，安装Magisk）"></a>3. https抓包（手机需要ROOT，安装Magisk）</h1><ul>
+<li><p>3.1 导出代理程序证书到桌面 Tools –&gt; Options –&gt; HTTPS –&gt; Actions –&gt; Export Root Certificate to Desktop  ，将证书拷贝到手机；</p>
+</li>
+<li><p>3.2 或手机直接连接fiddler代理后访问 ip:8888 直接下载证书，</p>
+</li>
+<li><p>3.3 手机 ——&gt; 设置——&gt;安全——&gt;加密与凭据——&gt;从设备存储空间安装——&gt;找到证书，点击安装。（各种安卓系统路径可以稍有不同）</p>
+</li>
+</ul>
+<ul>
+<li><p>3.4 Android7以后，系统不再信任用户级的证书，只信任系统级的证书，所以要抓包就需要把我们的代理程序证书安装至Android的系统目录中。网上提供了一些方案，这里使用Magisk的模块 【Move Certificates】 插件地址 <a target="_blank" rel="noopener" href="https://github.com/yochananmarqos/Move-Certificates">https://github.com/yochananmarqos/Move-Certificates</a></p>
+<ul>
+<li><p>Move Certificates 原理是将用户目录的证书移动到系统目录证书上面</p>
+</li>
+<li><p>安装代理程序证书到用户上，安装Move Certificates模块，重启手机，证书被移动到了系统目录</p>
+</li>
+</ul>
+</li>
+<li><p>3.5 重启app，通过fiddler可以看到app的https请求</p>
+</li>
+</ul>
+<h1 id="4-通过FiddlerScript修改请求参数"><a href="#4-通过FiddlerScript修改请求参数" class="headerlink" title="4. 通过FiddlerScript修改请求参数"></a>4. 通过FiddlerScript修改请求参数</h1><ul>
+<li><p>4.1 在Fiddler 中点击菜单“Rules &gt; Customize Rules”打开FiddlerScript Editor 编辑器，在这里可以编写Fiddler Script 脚本 。</p>
+</li>
+<li><p>4.2 FiddlerScript Editor 编辑器 提供简单的api和语法提示，下载 fsesetup.exe </p>
+</li>
+<li><p>4.3 参考</p>
+<ul>
+<li>参考 <a target="_blank" rel="noopener" href="https://www.sec4.fun/2020/10/02/fiddlerscript/">https://www.sec4.fun/2020/10/02/fiddlerscript/</a></li>
+<li>参考 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/i-love-python/p/11505669.html">https://www.cnblogs.com/i-love-python/p/11505669.html</a></li>
+<li>参考 <a target="_blank" rel="noopener" href="https://itcn.blog/p/1838182227.html">https://itcn.blog/p/1838182227.html</a></li>
+</ul>
+</li>
+<li><p>4.4 例子</p>
+<ul>
+<li><p>平时生产环境经常遇到一些账号有问题，但是如果想要复现bug，就需要登录对应的账号。因为没有短信验证码所以登录很麻烦。我们可以通过登录管理员账号，再修改每次请求中的token，来实现看到对应账号的问题。</p>
+<ul>
+<li><p>缓存增加问题账号的登录token</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">缓存增加登录token</span></span><br><span class="line">hset h_session:CD50FA11508C438F974F0BFA878007EE f_id 1736392595984105980</span><br><span class="line">hset at:CD50FA11508C438F974F0BFA878007EE at_id 1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>app登录开发使用的账号，通过Fiddler 拿到token </p>
+</li>
+<li><p>使用FiddlerScript修改token,OnBeforeRequest(oSession: Session)中增加逻辑<br><code>`</code>javascript<br>// 拦截host中包含 17house.com 的请求<br>if ( oSession.hostname.Contains(“17house.com”)) {</p>
+<p>  //原请求中的token<br>  var oldToken = “408BE9A3DFDD40B498F225C08145719B”;<br>  //要替换的token<br>  var newToken = “CD50FA11508C438F974F0BFA878007EE”;</p>
+<p>  if(oSession.HTTPMethodIs(“GET”)){</p>
+<pre><code>//get请求，token在url的上，替换url上的token
+FiddlerObject.log(&quot;======================fullUrl = &quot;+ oSession.fullUrl);
+oSession.fullUrl = oSession.fullUrl.Replace(oldToken,newToken);
+FiddlerObject.log(&quot;======================new,fullUrl = &quot;+ oSession.fullUrl);
+</code></pre><p>  }else if(oSession.HTTPMethodIs(“POST”)){</p>
+<pre><code>//post请求
+if(oSession.RequestHeaders.AllValues(&quot;Content-Type&quot;).Contains(&quot;json&quot;))&#123;
+    //token在 body 的json中
+    var jsonString = oSession.GetRequestBodyAsString();
+    FiddlerObject.log(&quot;======================jsonString = &quot;+ jsonString);
+    jsonString = jsonString.Replace(oldToken,newToken);
+    FiddlerObject.log(&quot;======================new,jsonString = &quot;+ jsonString);
+    oSession.utilSetRequestBody(jsonString);
+
+&#125;else&#123;
+    //formdata方式提交，postParam的结构 a=1&amp;b=2&amp;c=3
+    var postParam = oSession.GetRequestBodyAsString();
+    FiddlerObject.log(&quot;======================postParam = &quot;+ postParam);
+    postParam = postParam.Replace(oldToken,newToken);
+    FiddlerObject.log(&quot;======================new,postParam = &quot;+ postParam);
+    oSession.utilSetRequestBody(postParam);
+&#125;
+</code></pre><p>  }<br>  //FiddlerObject.log(“======================end”);<br>}</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 
     
   </div>
